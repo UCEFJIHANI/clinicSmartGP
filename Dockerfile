@@ -6,7 +6,19 @@ WORKDIR /app
 
 # Copie les fichiers de l'app
 COPY . .
-
+# Installe les bibliothèques système nécessaires à WeasyPrint
+RUN apt-get update && apt-get install -y \
+    libpango-1.0-0 \
+    libcairo2 \
+    libgdk-pixbuf2.0-0 \
+    libffi-dev \
+    shared-mime-info \
+    fonts-liberation \
+    libjpeg-dev \
+    libpng-dev \
+    libpq-dev \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 # Installe les dépendances
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
