@@ -4,4 +4,4 @@ from clinicSmart.wsgi import application
 
 
 if __name__ == '__main__':
-    serve(application, host = 'localhost', port='7070')
+    serve(application, host = 'DB_HOST', port='8080')
