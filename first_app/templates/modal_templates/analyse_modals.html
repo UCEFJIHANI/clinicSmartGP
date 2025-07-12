@@ -1,0 +1,7 @@
+<div class="modal" id="AnalyseModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" hx-get="{% url 'add_analyse' patient.id %}" hx-trigger="load, click from:#addanalyses">
+            <!-- content here -->
+        </div>
+    </div>
+</div>

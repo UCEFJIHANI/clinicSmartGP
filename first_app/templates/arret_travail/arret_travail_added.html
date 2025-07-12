@@ -1,0 +1,18 @@
+<p>L'état de santé de
+<span style="font-weight: bold;">{{ patient.full_name }}</span>,
+ agé de: <span style="font-weight: bold;">{{ patient.age }} ans</span>.
+ <br>Nécessite un arrêt de travail de
+ <span style="font-weight: bold;">{{ arret_travail.total_days}} jours</span>,
+ sauf complécations.
+A dater du <span style="font-weight: bold;">{{arret_travail.date1|date:"d/m/Y"}}</span>
+au <span style="font-weight: bold;">{{arret_travail.date2|date:"d/m/Y"}}</span></p>
+<div>
+    <button type="button" class="btn btn-primary"
+    hx-get="{% url 'edit_arret_travail' consultation.id %}" hx-target="#addArretTravail"
+    >
+        <span style="text-transform: none;">Modifier</span>
+    </button>
+    <a data-bs-dismiss="modal" class="btn btn-success">
+        <span style="text-transform: none;">Sauvgarder</span>
+    </a>
+</div>

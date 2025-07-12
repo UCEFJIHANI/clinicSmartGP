@@ -1,0 +1,50 @@
+<div class="modal-content" style="max-width: 600px;">
+    <div class="modal-header">
+        <h4>Les patients</h4>
+    </div>
+    <div class="modal-body">
+            <canvas id="patient-chart" data-url="{% url 'patient_chart_data' %}"></canvas>
+    </div>
+</div>
+
+<script>
+    $(function() {
+
+        var $patientChart = $("#patient-chart");
+        $.ajax({
+            url: $patientChart.data("url"),
+            success: function(data) {
+
+                var ctx = $patientChart[0].getContext("2d");
+
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Patients',
+                            backgroundColor: [
+                                'rgb(255, 99, 132)',
+                                'rgb(54, 162, 235)'
+                            ],
+                            data: data.data,
+                             hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Patient'
+                        }
+                    }
+                });
+
+            }
+        });
+
+    });
+</script>

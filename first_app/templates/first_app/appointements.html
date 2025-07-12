@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Liste des rendez-vous{% endblock %}
+
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="{% static 'my_css/style_table.css' %}">
+</head>
+<!-- Nava bar with model -->
+<nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+    <div class="container-fluid">
+        <!-- The search form -->
+        <form class="d-flex" method="get">
+            <!-- hiddin id -->
+            {% render_field form.id id="patientId"  %}
+            {% render_field form.query id="appointement" class="form-control me-2" type="search" placeholder="Recherche" aria-label="Search" %}
+            {% csrf_token %}
+            <!-- <input class="form-control me-2" type="search" placeholder="Recherche" aria-label="Search"> -->
+            <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+        </form>
+        <!-- add patient -->
+        <a type="button" class="btn btn-primary" href="{% url 'add_appointement' %}">
+            <i style="font-size: 16px;" class="far fa-calendar-plus me-2"></i>
+            <span style="text-transform: none; font-size: 16px;">Ajouter un rendez-vous</span>
+        </a>
+    </div>
+</nav>
+<!-- Data table -->
+<div class="header_fixed">
+    <table>
+        <thead>
+            <tr class="text-center">
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th class="mobile-hide">Sexe</th>
+                <th class="mobile-hide">Age</th>
+                <th class="mobile-hide">Date</th>
+                <th class="mobile-hide">Heure</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- first row -->
+            {% for rdv in appointements %}
+            <tr class="text-center">
+                <td onclick="window.location='{{ rdv.patient.get_absolute_url }}';">{{rdv.patient.first_name|lower|capfirst}}</td>
+                <td onclick="window.location='{{ rdv.patient.get_absolute_url }}';">{{rdv.patient.last_name|lower|capfirst}}</td>
+                <td class="mobile-hide" onclick="window.location='{{ rdv.patient.get_absolute_url }}';">{{rdv.patient.sexe|lower|capfirst}}</td>
+                <td class="mobile-hide" onclick="window.location='{{ rdv.patient.get_absolute_url }}';">{{rdv.patient.age}}</td>
+                <td class="mobile-hide" onclick="window.location='{{ rdv.patient.get_absolute_url }}';">{{rdv.date|date:"d/m/Y"}}</td>
+                <td class="mobile-hide" onclick="window.location='{{ rdv.patient.get_absolute_url }}';"> {{rdv.hour|date:"H:i"}}</td>
+                <td>
+                    <!-- add to salle d'attente -->
+                    <a class="btn btn-info btn-floating" role="button"
+                     hx-get="{% url 'add_attent' rdv.patient.id %}"
+                     hx-trigger="click" hx-target="#dialog"
+                     >
+                        <i class="fas fa-plus-circle" style="font-size:20px"></i>
+                    </a>
+                    <!-- Edit patient -->
+                    <a class="btn btn-primary btn-floating" role="button" hx-get="{% url 'edit_appointement' rdv.id page %}" hx-target="#dialog">
+                        <i class="fas fa-edit" style="font-size:20px"></i>
+                    </a>
+                    <!-- delete patient -->
+                    <a class="btn btn-danger btn-floating" role="button" hx-get="{% url 'delete_appointement' rdv.id page %}" hx-target="#dialog">
+                        <i class="fas fa-trash-alt" style="font-size:20px"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- items per page form -->
+<div style="margin-top: 20px; display: flex; justify-content: center; align-items: center;">
+    <div class="mobile-hide">
+    {% with WIDGET_ERROR_CLASS='is-invalid' %}
+    <form method="post" class="row g-3 align-items-center">
+        {% csrf_token %}
+        <div class="col-auto" style="margin: 0">
+            <label for="typeNumber" class="col-form-label"><h5>Par page</h5></label>
+        </div>
+        <div class="col-auto" style="margin: 0; max-width: 100px;">
+            {% render_field item_form.nums type="number" id="typeNumber" class="form-control" %}
+            <div class="invalid-feedback" style="z-index: 1000; margin-top: 10px;">{{ item_form.nums.errors|first }}</div>
+        </div>
+    </form>
+    {% endwith %}
+    </div>
+    <!-- build your pagination -->
+    <nav aria-label="...">
+        <ul class="pagination  pagination-circle pagination-lg">
+            <!-- first chunk -->
+            {% if appointements.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1"><i class="fas fa-fast-backward" style="font-size: 30px"></i></a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ appointements.previous_page_number }}">
+                    <i class="fas fa-step-backward" style="font-size: 30px"></i></a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link"><i class="fas fa-fast-backward" style="font-size: 30px"></i></a></li>
+            <li class="page-item disabled"><a class="page-link"><i class="fas fa-step-backward" style="font-size: 30px"></i></a></li>
+            {% endif %}
+            <!-- second chunck -->
+            {% for i in appointements.paginator.page_range %}
+            {% if appointements.number == i|add:"1" %}
+            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            {% if appointements.number == i %}
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" href="?page={{ i }}">{{ i }} <span class="visually-hidden">(current)</span></a>
+            </li>
+            {% endif %}
+            {% if appointements.number|add:"1" == i %}
+            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+            <!-- third chunck -->
+            {% if appointements.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ appointements.next_page_number }}"><i style="font-size: 30px" class="fas fa-step-forward"></i></a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ appointements.paginator.num_pages }}"><i style="font-size: 30px" class="fas fa-fast-forward"></i></a></li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link"><i style="font-size: 30px" class="fas fa-step-forward"></i></a></li>
+            <li class="page-item disabled"><a class="page-link"><i style="font-size: 30px" class="fas fa-fast-forward"></i></a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    $(function() {
+        $("#appointement").autocomplete({
+            source: "{% url 'autocomplete_appointement' %}",
+            focus: function() {
+                return false;
+            },
+            select: function(e, ui) {
+                $("#appointement").val(ui.item.label);
+                $("#patientId").val(ui.item.value);
+                return false;
+            }
+        });
+    });
+</script>
+{% endblock %}

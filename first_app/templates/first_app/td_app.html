@@ -1,0 +1,7 @@
+{% for app in  td_app %}
+<tr style="cursor: pointer;" onclick="window.location='{{ app.patient.get_absolute_url }}';">
+    <td>{{app.patient.first_name|lower|capfirst}}</td>
+    <td>{{app.patient.last_name|lower|capfirst}}</td>
+    <td>{{app.rdv}}</td>
+</tr>
+{% endfor %}

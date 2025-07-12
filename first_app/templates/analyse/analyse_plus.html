@@ -1,0 +1,24 @@
+<table class="table table-bordered">
+    <thead>
+        <tr class="text-center">
+            <th scope="col">Date de l'analyse</th>
+            <th scope="col">Nom de l'analyse</th>
+            <th scope="col">Valeur</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for analyse in analyses %}
+        <tr class="text-center">
+            <td style="margin: 0; padding:10px 0;">{{analyse.date|date:"d/m/Y"}}</td>
+            <td style="margin: 0; padding: 10px 0;">{{analyse.name|lower|capfirst}}</td>
+            <td style="margin: 0; padding: 10px 0;">{{analyse.value}}</td>
+            <td style="margin: 0; padding: 10px 0;">
+                <span style="color: red; cursor: pointer;" hx-get="{% url 'delete_analyse' analyse.id %}" hx-target="#analyseTable">
+                    <i class="fas fa-trash-alt"></i>
+                </span>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

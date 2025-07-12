@@ -1,0 +1,24 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th class="text-left" scope="col">La list des tests à faire</th>
+            <th class="text-right" scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for test in tests %}
+        <tr>
+            <td style="padding-left: 30px" class="text-left" style="margin: 0; padding:10px 0;">{{test.name|lower|capfirst}}</td>
+            <td style="padding-left: 30px" class="text-right">
+                <span style="color: red; cursor: pointer;" hx-get="{% url 'delete_test' test.id %}" hx-target="#test-table" _="on click
+                  call Swal.fire({title: 'Confirm', text:'Do you want to continue?'})
+                  if result.isConfirmed trigger confirmed">
+                    <i class="fas fa-trash-alt">
+                    </i>
+                </span>
+            </td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table

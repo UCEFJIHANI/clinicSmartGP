@@ -1,0 +1,480 @@
+{%  extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Modifier une consultation{% endblock %}
+
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="{% static 'my_css/style_patient_detail.css' %}">
+    <link rel="stylesheet" href="{% static 'my_css/style_add_consultation.css' %}">
+</head>
+<!-- Your project here -->
+<div class="container-fluid" style="background-color: #fff;">
+    <!-- patient and date -->
+    <nav>
+        <!-- Patient name and age -->
+        <div>
+            <h4> Patient: <small class="text-muted">{{ patient.name }}</small></h4>
+        </div>
+        <!-- date back to it -->
+        <div class="row g-3 align-items-center">
+            <div class="input-group flex-nowrap">
+                <span class="input-group-text" id="addon-wrapping"><i class="far fa-calendar" style="font-size:20px;"></i></span>
+                <fieldset disabled>
+                    <!-- Y-m-d -->
+                    <input type="date" name="" value="{{ consultation.created|date:"Y-m-d" }}" id="today" class="form-control" aria-describedby="addon-wrapping">
+                    <!-- {% render_field date_form.today id="today" class="form-control" aria-describedby="addon-wrapping"%} -->
+                </fieldset>
+            </div>
+        </div>
+
+    </nav>
+
+    <ul id="tabs">
+        <li>
+            <a href="#" name="tab1" data-toggle="tab">
+                <i class="fa-solid fa-clipboard-user me-2"></i>
+                Fiche de consultation
+            </a>
+        </li>
+        <li>
+            <a href="#" name="tab2" data-toggle="tab">
+                <i class="fas fa-info-circle me-2"></i>
+                Informations
+            </a>
+        </li>
+    </ul>
+    <div id="content">
+        <!-- Fiche de consultation -->
+        <div id="tab1">
+            {% with WIDGET_ERROR_CLASS='is-invalid' %}
+            <form class="mb-3" hx-post="{% url 'submit_add_consultation' consultation.id %}" id="form1">{% csrf_token %}
+                <!-- display not unique -->
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}
+                    <p>{{ error|escape }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <div class="row">
+                    <!-- Général -->
+                    <div class="col-lg-6 col-md-12 pe-4">
+                        <h4>Général</h4>
+                        <hr>
+                        <!-- Motif -->
+                        <div class="mb-2">
+                            <label class="form-label">Motifs</label>
+                            {% render_field form.motif class="form-control" style="height:80px;" id="consultation-motif"  placeholder="Motifs de la consultation" %}
+                            <div class="invalid-feedback">{{ form.motif.errors|first }}</div>
+                        </div>
+                        <!-- Antécédents -->
+                        <div class="mb-2">
+                            <label class="form-label">Antécédents</label>
+                            {% render_field form.antecedant class="form-control" style="height:80px;" id="consultation-anticedant"  placeholder="Antécédents de la consultation" %}
+                            <div class="invalid-feedback">{{ form.antecedant.errors|first }}</div>
+                        </div>
+                        <!-- Résultat de l'examen clinique -->
+                        <div class="mb-2">
+                            <label for="examen" class="form-label">Résultat de l'examen</label>
+                            {% render_field form.examen class="form-control" style="height:80px;" id="examen" placeholder="Examen clinique" %}
+                            <div class="invalid-feedback">{{ form.examen.errors|first }}</div>
+                        </div>
+                        <!-- Diagnostique médicale -->
+                        <div class="mb-2">
+                            <label for="diagnostique" class="form-label">Diagnostique médicale</label>
+                            {% render_field form.diagnostique class="form-control" style="height:80px;" id="diagnostique" placeholder="Le diagnostique" %}
+                            <div class="invalid-feedback">{{ form.diagnostique.errors|first }}</div>
+                        </div>
+                        <!-- Observation -->
+                        <div class="mb-4">
+                            <label for="observation" class="form-label">Observation</label>
+                            {% render_field form.observation id="Observation" style="height:80px;" class="form-control" placeholder="Remarques..." %}
+                            <div class="invalid-feedback">{{ form.observation.errors|first }}</div>
+                        </div>
+
+
+                    </div>
+                    <!-- Constantes vitales -->
+                    <div class="col-lg-6 col-md-12">
+                        <h4>Constantes vitales</h4>
+                        <hr>
+                        <!-- poids -->
+                        <div class="row mb-2 g-3 align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <label for="poids" class="col-form-label">Poids (Kg)</label>
+                            </div>
+                            <div class="col-auto">
+                                {% render_field form.poids_kg id="poids" class="form-control" placeholder="Le poids en Kg" %}
+                                <div class="invalid-feedback">{{ form.poids_kg.errors|first }}</div>
+                            </div>
+                        </div>
+                        <!-- Taille -->
+                        <div class="row mb-2 g-3 align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <label for="taille" class="col-form-label">Taille (Cm)</label>
+                            </div>
+                            <div class="col-auto">
+                                {% render_field form.taille_cm id="taille" class="form-control" placeholder="La taille en Cm" %}
+                                <div class="invalid-feedback">{{ form.taille_cm.errors|first }}</div>
+                            </div>
+                        </div>
+                        <!-- IMC -->
+                        <div class="row mb-3 g-3 align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <label for="imc" class="col-form-label">IMC</label>
+                            </div>
+                            <div class="col-auto">
+                                {% render_field form.imc id="imc" class="form-control" placeholder="IMC" %}
+                                <div class="invalid-feedback">{{ form.imc.errors|first }}</div>
+                            </div>
+                        </div>
+                        <!-- temperature -->
+                        <div class="row mb-3 g-3 align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <label for="temperature" class="col-form-label">Température (°C)</label>
+                            </div>
+                            <div class="col-auto">
+                                {% render_field form.temperature_degC id="temperature" class="form-control" placeholder="La température en Celsius" %}
+                                <div class="invalid-feedback">{{ form.temperature_degC.errors|first }}</div>
+                            </div>
+                        </div>
+                        <!-- fréquence cardiaque -->
+                        <div class="row mb-3 g-3 align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <label for="frequence" class="col-form-label">Fréquence cardiaque</label>
+                            </div>
+                            <div class="col-auto">
+                                {% render_field form.frequence_cardiaque id="frequence" class="form-control" placeholder="Ex: 70" %}
+                                <div class="invalid-feedback">{{ form.frequence_cardiaque.errors|first }}</div>
+                            </div>
+                        </div>
+                        <!-- pression artérielle -->
+                        <div class="row mb-3 g-3 align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <label for="pression" class="col-form-label">Pression artérielle</label>
+                            </div>
+                            <div class="col-auto">
+                                {% render_field form.pression_arterielle id="pression" class="form-control" placeholder="Ex: 8/12" %}
+                                <div class="invalid-feedback">{{ form.pression_arterielle.errors|first }}</div>
+                            </div>
+                        </div>
+                        <!-- sao2 -->
+                        <div class="row mb-3 g-3 align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <label for="sao2" class="col-form-label">Sa O2 (%)</label>
+                            </div>
+                            <div class="col-auto">
+                                {% render_field form.sao2 id="sao2" class="form-control" placeholder="Sa O2 en %" %}
+                                <div class="invalid-feedback">{{ form.sao2.errors|first }}</div>
+                            </div>
+                        </div>
+                        <!-- ct -->
+                        <div class="row mb-3 g-3 align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <label for="ct" class="col-form-label">Cholestérol total</label>
+                            </div>
+                            <div class="col-auto">
+                                {% render_field form.ct id="ct" class="form-control" placeholder="CT" %}
+                                <div class="invalid-feedback">{{ form.ct.errors|first }}</div>
+                            </div>
+                        </div>
+                        <!-- hdl -->
+                        <div class="row mb-3 g-3 align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <label for="hdl" class="col-form-label">High density lipoproteine</label>
+                            </div>
+                            <div class="col-auto">
+                                {% render_field form.hdl id="hdl" class="form-control" placeholder="HDL" %}
+                                <div class="invalid-feedback">{{ form.hdl.errors|first }}</div>
+                            </div>
+                        </div>
+                        <!-- ldl -->
+                        <div class="row mb-3 g-3 align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <label for="ldl" class="col-form-label">Low density lipoprotéine</label>
+                            </div>
+                            <div class="col-auto">
+                                {% render_field form.ldl id="ldl" class="form-control" placeholder="LDL" %}
+                                <div class="invalid-feedback">{{ form.ldl.errors|first }}</div>
+                            </div>
+                        </div>
+                        <!-- tg -->
+                        <div class="row mb-3 g-3 align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <label for="tg" class="col-form-label">Triglycérides</label>
+                            </div>
+                            <div class="col-auto">
+                                {% render_field form.tg id="tg" class="form-control" placeholder="TG" %}
+                                <div class="invalid-feedback">{{ form.tg.errors|first }}</div>
+                            </div>
+                        </div>
+                        <!-- g -->
+                        <div class="row mb-3 g-3 align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <label for="g" class="col-form-label">Glycémie</label>
+                            </div>
+                            <div class="col-auto">
+                                {% render_field form.g id="g" class="form-control" placeholder="G" %}
+                                <div class="invalid-feedback">{{ form.g.errors|first }}</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- submit button -->
+                <button type="submit" class="btn btn-success mb-4">
+                    <i class="fas fa-save me-2" style="font-size: 15px;"></i>
+                    <span style="text-transform: None;">Sauvegarder</span>
+                </button>
+            </form>
+            {% endwith %}
+
+        </div>
+        <!-- Patient information -->
+
+        <div id="tab2">
+            <div class="modal-header">
+                <h4 class="modal-title">Informations du patient</h4>
+            </div>
+            <div class="container-fluid" style="margin-top: 20px;">
+                <fieldset disabled>
+                    <!-- patient name -->
+                    <div class="row mb-2">
+                        <label style="white-space: nowrap;" class="col-md-2 col-lg-1 col-sm-2 col-form-label">
+                            Patient:
+                        </label>
+                        <div class="col-md-10 col-lg-11 col-sm-10">
+                            <input type="text" class="form-control" value="{{ patient.full_name }}">
+                        </div>
+                    </div>
+                    <!-- age and date -->
+                    <div class="row mb-2">
+                        <div class="col-lg-6 col-md-12">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-2">
+                                    <label style="white-space: nowrap;" class="col-form-label">Sexe:</label>
+                                </div>
+                                <div class="col-10">
+                                    <input type="text" class="form-control" value="{{ patient.sexe|lower|capfirst }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-2">
+                                    <label style="white-space: nowrap;" class="col-form-label">Age:</label>
+                                </div>
+                                <div class="col-10">
+                                    <input type="text" class="form-control" value="{{ patient.age }} ans">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- cnie and mutuelle -->
+                    <div class="row mb-2">
+                        <div class="col-lg-6 col-md-12">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-2">
+                                    <label style="white-space: nowrap;" class="col-form-label">CNIE:</label>
+                                </div>
+                                <div class="col-10">
+                                    <input type="text" class="form-control" value="{{ patient.cnie|lower|capfirst }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-2">
+                                    <label style="white-space: nowrap;" class="col-form-label">Mutuelle:</label>
+                                </div>
+                                <div class="col-10">
+                                    <input type="text" class="form-control" value="{{ patient.mutuelle|upper }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Mobile and Email -->
+                    <div class="row mb-2">
+                        <div class="col-lg-6 col-md-12">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-2">
+                                    <label style="white-space: nowrap;" class="col-form-label">Mobile:</label>
+                                </div>
+                                <div class="col-10">
+                                    <input type="text" class="form-control" value="{{ patient.phone_number }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-2">
+                                    <label style="white-space: nowrap;" for="ordPatientage" class="col-form-label">Email:</label>
+                                </div>
+                                <div class="col-10">
+                                    <input type="text" class="form-control" value="{{ patient.email|lower }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Adresse -->
+                    <div class="row mb-2">
+                        <label style="white-space: nowrap;" class="col-md-2 col-lg-1 col-sm-2 col-form-label">Adresse:</label>
+                        <div class="col-md-10 col-lg-11 col-sm-10">
+                            <input type="text" class="form-control" value="{{ patient.address|lower|capfirst }}">
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+    </div>
+    <!-- end of content -->
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    // initial
+    $(document).ready(function() {
+        var activeTab = localStorage.getItem('activeTab');
+        if (activeTab) {
+            var query = `#tabs li:nth-child(${activeTab})`;
+        } else {
+            var query = "#tabs li:nth-child(1)";
+        }
+        console.log(query)
+        $("#content").find("[id^='tab']").hide(); // Hide all content
+        $(query).attr("id", "current"); // Activate the first tab
+        $("#" + $("#current a").attr('name')).fadeIn(); // Show first tab's content
+
+
+        $('#tabs a').click(function(e) {
+            e.preventDefault();
+            if ($(this).closest("li").attr("id") == "current") { //detection for current tab
+                return;
+            } else {
+                $("#content").find("[id^='tab']").hide(); // Hide all content
+                $("#tabs li").attr("id", ""); //Reset id's
+                $(this).parent().attr("id", "current"); // Activate this
+                $('#' + $(this).attr('name')).fadeIn(); // Show content for the current tab
+                localStorage.setItem("activeTab", 1);
+                // $('#current').index() + 1
+            }
+        });
+    });
+
+    // flatpicker code
+    flatpickr("#today", {
+        locale: "fr",
+        enableTime: false,
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "l j F Y"
+    });
+    // auto complete
+    function split(val) {
+        return val.split(/,\s*/);
+    }
+
+    function extractLast(term) {
+        return split(term).pop();
+    }
+    // motif
+    $(function() {
+        $("#consultation-motif").autocomplete({
+            minLength: 0,
+            source: function(request, response) {
+                $.ajax({
+                    url: "{% url 'autocomplete_motif' %}",
+                    dataType: "json",
+                    data: {
+                        'term': extractLast(request.term),
+                    },
+                    success: function(data) {
+                        response(data);
+                    }
+                });
+            },
+            focus: function() {
+                return false;
+            },
+            select: function(e, ui) {
+                var terms = split(this.value);
+                terms.pop();
+                terms.push(ui.item.value);
+                terms.push("");
+                this.value = terms.join(", ");
+                return false;
+            }
+        });
+    });
+    // antecedant
+    $(function() {
+        $("#consultation-anticedant").autocomplete({
+            minLength: 0,
+            source: function(request, response) {
+                $.ajax({
+                    url: "{% url 'autocomplete_motif' %}",
+                    dataType: "json",
+                    data: {
+                        'term': extractLast(request.term),
+                    },
+                    success: function(data) {
+                        response(data);
+                    }
+                });
+            },
+            focus: function() {
+                return false;
+            },
+            select: function(e, ui) {
+                var terms = split(this.value);
+                terms.pop();
+                terms.push(ui.item.value);
+                terms.push("");
+                this.value = terms.join(", ");
+                return false;
+            }
+        });
+    });
+    // examen
+    $(function() {
+        $("#examen").autocomplete({
+            minLength: 0,
+            source: function(request, response) {
+                $.ajax({
+                    url: "{% url 'autocomplete_examen' %}",
+                    dataType: "json",
+                    data: {
+                        'term': extractLast(request.term),
+                    },
+                    success: function(data) {
+                        response(data);
+                    }
+                });
+            },
+            focus: function() {
+                return false;
+            },
+            select: function(e, ui) {
+                var terms = split(this.value);
+                terms.pop();
+                terms.push(ui.item.value);
+                terms.push("");
+                this.value = terms.join(", ");
+                return false;
+            }
+        });
+    });
+    // auto fille IMC
+    $('#poids, #taille').keyup(function() {
+        if ($('#taille').val()) {
+                $('#imc').val( ($('#poids').val()/(Math.pow($('#taille').val()/100, 2))).toFixed(2));
+        }
+    });
+</script>
+{% endblock %}

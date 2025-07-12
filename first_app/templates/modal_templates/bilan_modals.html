@@ -1,0 +1,26 @@
+<div class="modal" id="bilanModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" hx-get="{% url 'bilan' consultation.id %}" hx-trigger="click from:#bilan-btn">
+            <!-- content here -->
+        </div>
+    </div>
+</div>
+<div class="modal" id="bilanModal2" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <!-- "every 2s" "load, click from:#testPrintOrd" to try later-->
+        <div class="modal-content" hx-get="{% url 'bilan_pdf' consultation.id %}"
+        hx-trigger="bilanChanged from:body" hx-target="#bilan-overview-body">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- modal-body -->
+            <div id="bilan-overview-body" style="width: 100%;">
+                <p style="text-align: center; margin: 10px;" >Veuillez  ajouter un bilan svp!</p>
+            </div>
+            <!-- footer -->
+            <div class="modal-footer">
+                <a href="#" data-bs-dismiss="modal" class="btn btn-info">Fermer</a>
+            </div>
+        </div>
+    </div>
+</div>

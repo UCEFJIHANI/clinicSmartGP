@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Ajouter une consultation{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 40px;">
+    {% with WIDGET_ERROR_CLASS='is-invalid' %}
+    <form method="post" class="modal-content">
+        {% csrf_token %}
+        <div class="modal-header">
+            <h4>Sélectionner un patient ou en ajouter un nouveau</h4>
+        </div>
+        <!-- display not unique -->
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}
+            <p>{{ error|escape }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <!-- hiddin id -->
+        {% render_field form.id id="patientId"  %}
+        <div class="modal-body row g-3">
+            <div class="col-md-6">
+                <div class="input-group rounded">
+                    {% render_field form.query class="form-control rounded" id="patientConsultation"  placeholder="Sélectionner un patient" aria-label="Search" aria-describedby="search-addon" %}
+                    <span class="input-group-text border-0" id="search-addon">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <div class="invalid-feedback">{{ form.query.errors|first }}</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-3">
+                <button type="button" class="btn btn-primary" hx-get="{% url 'add_patient_consultation' %}" hx-target="#dialog">
+                    <i class="fa-solid fa-user-plus me-2"></i>
+                    <span style="text-transform: none; font-size: 16px;">Ajouter un patient</span>
+                </button>
+            </div>
+        </div>
+
+
+        <div class="modal-footer">
+            <a href="{% url 'consultations' %}" class="btn btn-secondary" style="text-transform: none; font-size: 16px;">Annuler</a>
+            <button type="submit" class="btn btn-primary" style="text-transform: none; font-size: 16px;">Nouvelle consultation</button>
+        </div>
+    </form>
+</div>
+{% endwith %}
+{% endblock %}
+{% block script %}
+<script>
+    $(function() {
+        $("#patientConsultation").autocomplete({
+            source: "{% url 'autocomplete_patient' %}",
+            focus: function() {
+                return false;
+            },
+            select: function(e, ui) {
+                $("#patientConsultation").val(ui.item.label);
+                $("#patientId").val(ui.item.value);
+                return false;
+            }
+        });
+    });
+</script>
+{% endblock %}

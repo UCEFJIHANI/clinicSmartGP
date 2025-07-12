@@ -1,0 +1,50 @@
+.first-modal-links {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.ordonnance-patient-data {
+    margin-top: 10px;
+    border: 1px solid var(--mdb-primary);
+    border-radius: 10px;
+    padding: 10px;
+}
+tr.htmx-swapping td {
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}
+.consultation-links {
+    margin-bottom:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.consultation-links-first {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+@media (max-width: 1300px) {
+    .consultation-links {
+        margin-bottom:20px;
+        display: grid;
+        grid-gap: 10px;
+        grid-template-columns: repeat(1,1fr);
+    }
+}
+
+@media (max-width: 1200px) {
+    .consultation-links-first {
+        display: grid;
+        grid-gap: 10px;
+        grid-template-columns: repeat(3,2fr);
+    }
+}
+@media (max-width: 700px) {
+    .consultation-links-first {
+        display: grid;
+        grid-gap: 10px;
+        grid-template-columns: repeat(1,1fr);
+    }
+}

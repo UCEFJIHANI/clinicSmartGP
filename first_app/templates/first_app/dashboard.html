@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+
+{% block title %}
+
+<head>
+    <link rel="stylesheet" href="{% static 'my_css/style_dashboard.css' %}">
+</head>
+<!-- Search bar -->
+<div class="header">
+    <form method='post'>
+        <!-- hiddin id -->
+        {% render_field form.id id="patientId" %}
+        <div class="input-group rounded">
+            {% render_field form.query class="form-control rounded" id="patient" type="search" placeholder="Recherche" aria-label="Search" aria-describedby="search-addon"%}
+            {% csrf_token %}
+            <span class="input-group-text border-0" id="search-addon">
+                <i class="fas fa-search"></i>
+            </span>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- data list -->
+    <div>
+        <div class="details">
+            <!-- salle_attent -->
+            <div class="recentOrders">
+                <div class="cardHeader">
+                    <h2 style="white-space: nowrap;">Salle d'attente</h2>
+                    <div class="mobile-hide">
+                        <fieldset disabled>
+                            {% render_field date_form.today id="today" class="form-control" aria-describedby="addon-wrapping"%}
+                        </fieldset>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align:left">Order</th>
+                            <th class="mobile-hide" style="text-align:center">Heure d'arrivée</th>
+                            <th style="text-align:center">Patient</th>
+                            <th style="text-align:center">Motif</th>
+                            <th style="text-align:right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody hx-get="{% url 'salle_attent' %}" hx-trigger="load, every 2s, SalleAttenteChanged from:body">
+                        <!-- ajax content here -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- daily appointement -->
+            <div class="recentappoint" style="min-height: 200px;">
+                <!-- card here -->
+                <!-- cards -->
+                <div class="cardBox">
+                    <!-- card 2 -->
+                    <div class="custom-card"
+                    hx-get="{% url 'add_delegue' %}"
+                    hx-trigger="click" hx-target="#dialog">
+                        <div>
+                            <div class="numbers"
+                            hx-get="{% url 'delegue' %}"
+                            hx-trigger="load, every 2s, delegueChanged from:body"
+                            hx-target="#del-num"
+                            >
+                            <span id="del-num"></span>
+                            </div>
+                            <div class="cardName">
+                                Délégués medicaux en attente
+                            </div>
+                        </div>
+                        <div class="iconBox">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                    <!-- card 3 -->
+                    <div class="custom-card">
+                        <div>
+                            <div class="numbers"
+                            hx-get="{% url 'total_com_app' %}"
+                            hx-trigger="load, every 2s"
+                            hx-target="#total-com-app">
+                            <!-- {{ total_com_app }} -->
+                            <span id="total-com-app"></span>
+                            </div>
+                            <div class="cardName">Patients ayant RDV</div>
+                        </div>
+                        <div class="iconBox">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="cardHeader">
+                    <h2>Rendez-vous du jour</h2>
+                    <a href="{% url 'appointements' %}" class="btn btn-info" style="text-transform:none;">Voir tout</a>
+                </div>
+                <table>
+                    <thead hx-get="{% url 'td_app' %}"
+                    hx-trigger="load, every 2s"
+                    hx-target="#td-app">
+                        <tr>
+                            <td>Prénon</td>
+                            <td>Nom</td>
+                            <td>Date</td>
+                        </tr>
+                    </thead>
+                    <tbody id="td-app"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block script %}
+<script>
+    $(function() {
+        $("#patient").autocomplete({
+            source: "{% url 'autocomplete_patient' %}",
+            focus: function() {
+                return false;
+            },
+            select: function(e, ui) {
+                $("#patient").val(ui.item.label);
+                $("#patientId").val(ui.item.value);
+                return false;
+            }
+        });
+    });
+    // flatpicker code
+    flatpickr("#today", {
+        locale: "fr",
+        enableTime: false,
+        dateFormat: "d-m-Y",
+        altInput: true,
+        altFormat: "l j F Y"
+    });
+</script>
+{% endblock %}

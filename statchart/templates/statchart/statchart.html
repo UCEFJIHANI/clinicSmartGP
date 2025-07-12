@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Satatistiques{% endblock %}
+
+{% block content %}
+<!--  -->
+
+<head>
+    <link rel="stylesheet" href="{% static 'my_css/stats_page.css' %}">
+</head>
+<!-- title -->
+<div class="container-fluid">
+    <div class="stats-title">
+        <h2 hx-get="{% url 'show_periode' %}" hx-trigger="load, statDatesChanged from:body">
+        </h2>
+        <button type="button" class="btn btn-primary btn-floating" hx-get="{% url 'change_stat_periode' %}" hx-target="#dialog">
+            <i style="font-size: 16px;" class="fas fa-edit me-2"></i>
+        </button>
+    </div>
+
+    <!-- Patient row -->
+    <div class="row mt-2">
+        <!-- patient chart -->
+        <div class="chart col-xl-6 col-lg-12 mt-4" hx-get="{% url 'patient_chart' %}" hx-trigger="load, statDatesChanged from:body"></div>
+        <!-- patient categories chart -->
+        <div class="chart col-xl-6 col-lg-12 mt-4" hx-get="{% url 'patient_categories_chart' %}" hx-trigger="load, statDatesChanged from:body"></div>
+
+    </div>
+    <!-- Consultation row -->
+    <div class="row mt-2 mb-5">
+        <!-- patient chart -->
+        <div class="chart col-xl-6 col-lg-12 mt-4" hx-get="{% url 'consultation_chart' %}" hx-trigger="load, statDatesChanged from:body"></div>
+        <!-- consultations categories chart -->
+        <div class="chart col-xl-6 col-lg-12 mt-4" hx-get="{% url 'consultation_categories' %}" hx-trigger="load, statDatesChanged from:body"></div>
+    </div>
+    <!-- Payment row -->
+    <div class="row mt-2 mb-5">
+        <!-- Payment chart -->
+        <div class="chart col-xl-6 col-lg-12 mt-4" hx-get="{% url 'payments_categories' %}" hx-trigger="load, statDatesChanged from:body"></div>
+        <!-- Payment per prestation chart -->
+        <div class="chart col-xl-6 col-lg-12 mt-4" hx-get="{% url 'payments_prestation' %}" hx-trigger="load, statDatesChanged from:body"></div>
+    </div>
+
+</div>
+
+{% endblock %}

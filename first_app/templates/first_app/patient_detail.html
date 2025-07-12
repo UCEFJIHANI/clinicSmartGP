@@ -1,0 +1,410 @@
+{%  extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Dossier médical{% endblock %}
+
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="{% static 'my_css/style_patient_detail.css' %}">
+    <link rel="stylesheet" href="{% static 'my_css/style_add_consultation.css' %}">
+    <style>
+        .ui-autocomplete {
+            z-index: 2147483647;
+        }
+
+        .filelabel {
+            width: 100%;
+            border: 2px dashed grey;
+            border-radius: 5px;
+            display: block;
+            padding: 5px;
+            transition: border 300ms ease;
+            cursor: pointer;
+            text-align: center;
+            margin: 0;
+        }
+
+        .filelabel i,
+        .filelabel .title {
+            color: grey;
+            transition: 200ms color;
+        }
+
+        .filelabel:hover {
+            border: 2px solid #1665c4;
+        }
+
+        .filelabel:hover i,
+        .filelabel:hover .title {
+            color: #1665c4;
+        }
+
+        #FileInput {
+            display: none;
+        }
+    </style>
+
+
+</head>
+<!-- Your project here -->
+<div class="container-fluid" style="background-color: #fff;">
+    <nav>
+        <!-- Patient name and age -->
+        <div>
+            <h4> Patient: <small class="text-muted">{{ patient.name }}</small>, Age: <small class="text-muted">{{ patient.age }} ans</small></h4>
+        </div>
+        <div class="nav-details-link">
+            <!-- add bilan -->
+            <a class="btn btn-primary" data-bs-toggle="modal" href="#AnalyseModal" type="button" id="addanalyses">
+                <i class="fas fa-vials me-2"></i>
+                <span style="text-transform: None;">Ajouter un bilan</span>
+            </a>
+            <!-- add consultation button -->
+            <a class="btn btn-primary" href="{% url 'add_consultation' patient.id %}">
+                <i class="fa-solid fa-notes-medical me-2"></i>
+                <span style="text-transform: None;">Nouvelle consultation</span>
+            </a>
+        </div>
+    </nav>
+    <!-- modal container -->
+    <div id="modals-consultation-document"></div>
+    <ul id="tabs">
+        <li>
+            <a href="#" name="tab1">
+                <i class="fas fa-info-circle me-2"></i>
+                Information
+            </a>
+        </li>
+        <li>
+            <a href="#" name="tab2">
+                <i class="fas fa-clipboard me-2"></i>
+                Consultations
+            </a>
+        </li>
+        <!-- Bilan -->
+        <li>
+            <a href="#" name="tab3">
+                <i class="fas fa-chart-line me-2"></i>
+                Graphiques
+            </a>
+        </li>
+    </ul>
+    <div id="content">
+        <!-- patient info -->
+        <div id="tab1">
+            <div class="modal-header">
+                <h4 class="modal-title">Informations du patient</h4>
+                <!-- Edit patient -->
+                <a class="btn btn-primary btn-floating" role="button" hx-get="{% url 'edit_patient_detail' patient.id %}" hx-target="#dialog">
+                    <i class="fas fa-edit" style="font-size:20px"></i>
+                </a>
+            </div>
+            <div class="container-fluid" style="margin-top: 20px;">
+                <fieldset disabled>
+                    <!-- patient name -->
+                    <div class="row mb-2">
+                        <label style="white-space: nowrap;" class="col-md-2 col-lg-1 col-sm-2 col-form-label">
+                            Patient:
+                        </label>
+                        <div class="col-md-10 col-lg-11 col-sm-10">
+                            <input type="text" class="form-control" value="{{ patient.full_name }}">
+                        </div>
+                    </div>
+                    <!-- age and date -->
+                    <div class="row mb-2">
+                        <div class="col-lg-6 col-md-12">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-2">
+                                    <label style="white-space: nowrap;" class="col-form-label">Sexe:</label>
+                                </div>
+                                <div class="col-10">
+                                    <input type="text" class="form-control" value="{{ patient.sexe|lower|capfirst }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-2">
+                                    <label style="white-space: nowrap;" class="col-form-label">Age:</label>
+                                </div>
+                                <div class="col-10">
+                                    <input type="text" class="form-control" value="{{ patient.age }} ans">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- cnie and mutuelle -->
+                    <div class="row mb-2">
+                        <div class="col-lg-6 col-md-12">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-2">
+                                    <label style="white-space: nowrap;" class="col-form-label">CNIE:</label>
+                                </div>
+                                <div class="col-10">
+                                    <input type="text" class="form-control" value="{{ patient.cnie|lower|capfirst }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-2">
+                                    <label style="white-space: nowrap;" class="col-form-label">Mutuelle:</label>
+                                </div>
+                                <div class="col-10">
+                                    <input type="text" class="form-control" value="{{ patient.mutuelle|upper }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Mobile and Email -->
+                    <div class="row mb-2">
+                        <div class="col-lg-6 col-md-12">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-2">
+                                    <label style="white-space: nowrap;" class="col-form-label">Mobile:</label>
+                                </div>
+                                <div class="col-10">
+                                    <input type="text" class="form-control" value="{{ patient.phone_number }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-2">
+                                    <label style="white-space: nowrap;" for="ordPatientage" class="col-form-label">Email:</label>
+                                </div>
+                                <div class="col-10">
+                                    <input type="text" class="form-control" value="{{ patient.email|lower }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Adresse -->
+                    <div class="row mb-2">
+                        <label style="white-space: nowrap;" class="col-md-2 col-lg-1 col-sm-2 col-form-label">Adresse:</label>
+                        <div class="col-md-10 col-lg-11 col-sm-10">
+                            <input type="text" class="form-control" value="{{ patient.address|lower|capfirst }}">
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <!-- dossier medical -->
+        <div id="tab2">
+            <!-- tab content -->
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="list-consul col-xl-3 col-lg-12 p-3 bg-light border-right" style="overflow-y: auto;">
+                        <ul class="list-group list-group-flush overflow-auto h-100">
+                            {% for consultation in consultations_list %}
+                            <li style="cursor: pointer;" class="list-group-item {% if forloop.first %}btn-primary{% else %}{% endif %}" data-target-tab="#consul{{ consultation.id }}">
+                                <span style="text-transform: none;">Consultation du {{consultation.created|date:"d/m/Y"}}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-xl-9 col-lg-12 p-3 pt-0">
+                        {% for consultation in consultations_list %}
+                        <div class="item {% if forloop.first %}active{% else %}{% endif %}" id="consul{{ consultation.id }}">
+                            <!-- the consultation detail -->
+                            <div class="d-flex justify-content-between mb-3">
+                                <h4 class="modal-title">Fiche de consultation du {{consultation.created|date:"d/m/Y"}}</h4>
+                                <!-- Edit patient -->
+                                <a class="btn btn-primary btn-floating" role="button" hx-get="{% url 'edit_consultation_detail' consultation.id %}" hx-target="#dialog">
+                                    <i class="fas fa-edit" style="font-size:20px"></i>
+                                </a>
+                            </div>
+                            <!-- consultation field -->
+                            <div hx-get="{% url 'consultation_detail' consultation.id %}" hx-trigger="load, ConsultationDetailChanged from:body">
+                                <!-- content will be here -->
+                            </div>
+                            <hr>
+                            <!-- ordonnance -->
+                            {% if consultation.medicaments.all %}
+                            <div class="aline-con-pdfs">
+                                <h6>Ordonnance</h6>
+                                <div>
+                                    <!-- show ordonnance -->
+                                    <span style="color: blue; cursor: pointer;"
+                                    hx-get="{% url 'patient_detail_ordonnance' consultation.id %}" hx-target="#modals-consultation-document"
+                                        _="on htmx:afterOnLoad wait 10ms then add .show to #modalshowdocument then add .show to #modal-backdrop">
+                                        <i class="fas fa-eye" style="font-size: 25px;"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <hr>
+                            {% endif %}
+                            <!-- bilan -->
+                            {% if consultation.tests.all %}
+                            <div class="aline-con-pdfs">
+                                <h6>Bilan</h6>
+                                <div>
+                                    <!-- show ordonnance -->
+                                    <span style="color: blue; cursor: pointer;" hx-get="{% url 'patient_detail_bilan' consultation.id %}" hx-target="#modals-consultation-document"
+                                        _="on htmx:afterOnLoad wait 10ms then add .show to #modalshowdocument then add .show to #modal-backdrop">
+                                        <i class="fas fa-eye" style="font-size: 25px;"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <hr>
+                            {% endif %}
+                            <!-- Arrêt de travail -->
+                            {% if consultation.arrettravail %}
+                            <div class="aline-con-pdfs">
+                                <h6>Arrêt de travail</h6>
+                                <div>
+                                    <!-- show ordonnance -->
+                                    <span style="color: blue; cursor: pointer;" hx-get="{% url 'patient_detail_arret_travail' consultation.id %}" hx-target="#modals-consultation-document"
+                                        _="on htmx:afterOnLoad wait 10ms then add .show to #modalshowdocument then add .show to #modal-backdrop">
+                                        <i class="fas fa-eye" style="font-size: 25px;"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <hr>
+                            {% endif %}
+                            <!-- Certificat médical -->
+                            {% if consultation.certificatmedical %}
+                            <div class="aline-con-pdfs">
+                                <h6>Certificat médical</h6>
+                                <div>
+                                    <!-- edit ordonnance -->
+                                    <!-- show ordonnance -->
+                                    <span style="color: blue; cursor: pointer;" hx-get="{% url 'patient_detail_certificat_medical' consultation.id %}" hx-target="#modals-consultation-document"
+                                        _="on htmx:afterOnLoad wait 10ms then add .show to #modalshowdocument then add .show to #modal-backdrop">
+                                        <i class="fas fa-eye" style="font-size: 25px;"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <hr>
+                            {% endif %}
+                            <!-- Lettre Orientation -->
+                            {% if consultation.lettreorientation %}
+                            <div class="aline-con-pdfs">
+                                <h6>Lettre d'orientation</h6>
+                                <div>
+                                    <!-- show ordonnance -->
+                                    <span style="color: blue; cursor: pointer;" hx-get="{% url 'patient_detail_lettre_orientation' consultation.id %}" hx-target="#modals-consultation-document"
+                                        _="on htmx:afterOnLoad wait 10ms then add .show to #modalshowdocument then add .show to #modal-backdrop">
+                                        <i class="fas fa-eye" style="font-size: 25px;"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <hr>
+                            {% endif %}
+                            <!-- Facture -->
+                            {% if consultation.payments.all %}
+                            <div class="aline-con-pdfs">
+                                <h6>Facture</h6>
+                                <div>
+                                    <!-- show ordonnance -->
+                                    <span style="color: blue; cursor: pointer;" hx-get="{% url 'patient_detail_facture' consultation.id %}" hx-target="#modals-consultation-document"
+                                        _="on htmx:afterOnLoad wait 10ms then add .show to #modalshowdocument then add .show to #modal-backdrop">
+                                        <i class="fas fa-eye" style="font-size: 25px;"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <hr>
+                            {% endif %}
+
+                            <!-- consultation document -->
+                            <h4 class="mt-4">Documents attachés</h4>
+                            <!-- document list -->
+                            <div hx-get="{% url 'consultation_document' consultation.id %}" hx-trigger="load, documentListChanged from:body">
+                            </div>
+                            <h6 class="mt-2">Ajouter un Document</h6>
+                            <div hx-get="{% url 'add_consultation_document' consultation.id %}" hx-trigger="load">
+                            </div>
+                            <hr>
+
+                            <!-- Paiement -->
+                            <h4 class="mt-4">Paiements</h4>
+                            <!-- service list -->
+                            <div hx-get="{% url 'consultation_services' consultation.id %}"
+                             hx-trigger="load, serviceListChanged from:body">
+                            </div>
+                            <h6 class="mt-2">Ajouter une prestation</h6>
+                            <div id="consul-pres{{ consultation.id }}">
+                                <div hx-get="{% url 'add_consultation_service' consultation.id %}" hx-trigger="load">
+                                </div>
+                            </div>
+                            <hr>
+
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <!-- tab content -->
+        </div>
+        <!-- Chart -->
+        <div id="tab3">
+            <!-- analyse charts -->
+            <div class="container-fluid">
+                <!-- form to add it using ajax -->
+                <div hx-get="{% url 'chart_form' patient.id %}" hx-trigger="load, analyseListChanged from:body">
+                </div>
+                <!-- Charts -->
+                <div id="chart">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- models for bilan -->
+{% include "modal_templates/analyse_modals.html" %}
+{% endblock %}
+{% block script %}
+<script>
+    // script for modal
+    function closeModal() {
+        var container = document.getElementById("modals-consultation-document")
+        var backdrop = document.getElementById("modal-backdrop")
+        var modal = document.getElementById("modalshowdocument")
+
+        modal.classList.remove("show")
+        backdrop.classList.remove("show")
+
+        setTimeout(function() {
+            container.removeChild(backdrop)
+            container.removeChild(modal)
+        }, 200)
+    }
+    //script for tabs
+    $(document).ready(function() {
+        $("#content").find("[id^='tab']").hide(); // Hide all content
+        $("#tabs li:first").attr("id", "current"); // Activate the first tab
+        $("#content #tab1").fadeIn(); // Show first tab's content
+
+        $('#tabs a').click(function(e) {
+            e.preventDefault();
+            if ($(this).closest("li").attr("id") == "current") { //detection for current tab
+                return;
+            } else {
+                $("#content").find("[id^='tab']").hide(); // Hide all content
+                $("#tabs li").attr("id", ""); //Reset id's
+                $(this).parent().attr("id", "current"); // Activate this
+                $('#' + $(this).attr('name')).fadeIn(); // Show content for the current tab
+            }
+        });
+    });
+    // for vertical tabs
+    const btns = document.querySelectorAll("[data-target-tab]");
+
+    btns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            btns.forEach((btn) => btn.classList.remove("btn-primary"));
+
+            const items = document.querySelectorAll(".item");
+
+            items.forEach((item) => item.classList.remove("active"));
+            btn.classList.add("btn-primary");
+            document.querySelector(btn.dataset.targetTab).classList.add("active");
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,134 @@
+{% load widget_tweaks %}
+<div class="modal-header">
+    <h4 class="modal-title">Bilan</h4>
+</div>
+<div class="container"></div>
+<div class="modal-body">
+    <div class="first-modal-links">
+        <!-- Apercu et imprimer -->
+        <div>
+            <button data-bs-toggle="modal" href="#bilanModal2" type="button" class="btn btn-primary" id="testPrintOrd">
+                <i class="fas fa-search me-2" style="font-size: 15px;"></i>
+                <span style="text-transform: None;">Aperçu et imprimer</span>
+            </button>
+        </div>
+    </div>
+    <!-- patient data -->
+    <div class="ordonnance-patient-data">
+        <fieldset disabled>
+            <!-- patient name -->
+            <div class="row mb-2">
+                <label for="ordPatientname" class="col-sm-1 col-form-label">Patient</label>
+                <div class="col-sm-11">
+                    <input type="text" class="form-control" id="ordPatientname" value="{{ patient.full_name }}">
+                </div>
+            </div>
+            <!-- age and date -->
+            <div class="row">
+                <div class="col-6">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-2">
+                            <label for="ordPatientage" class="col-form-label">Age</label>
+                        </div>
+                        <div class="col-10">
+                            <input type="text" id="ordPatientage" class="form-control" value="{{ patient.age }} ans">
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-2">
+                            <label for="todayOrd" class="col-form-label">date</label>
+                        </div>
+                        <div class="col-10">
+                            {% render_field date_form.today id="todayOrd" class="form-control" %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <!-- List des medicaments -->
+    <div class="ordonnance-patient-data">
+        <div id="test-table">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="text-left" scope="col">La list des tests à faire</th>
+                        <th class="text-right" scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for test in tests %}
+                    <tr>
+                        <td style="padding-left: 30px" class="text-left" style="margin: 0; padding:10px 0;">{{test.name|lower|capfirst}}</td>
+                        <td style="padding-left: 30px" class="text-right" style="margin: 0; padding: 10px 0;">
+                            <span style="color: red; cursor: pointer;" hx-get="{% url 'delete_test' test.id %}" hx-target="#test-table">
+                                <i class="fas fa-trash-alt"></i>
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- test form here -->
+        <!-- work on it -->
+        <form hx-post="{% url 'add_test' consultation.id %}" hx-target="#test-table">
+            {% csrf_token %}
+            <table class="table">
+                <tbody>
+                    <tr class="text-center">
+                        <td>
+                            <select  name="dropdowTestBilanName" class="form-select" id="test-bilan-search">
+                                <option value="">Nom de test</option>
+                                {% for test in test_names %}
+                                    <option value="{{ test }}">{{ test }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-primary btn-floating">
+                                <i class="fas fa-plus" style="font-size:20px"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+
+</div>
+<div class="modal-footer">
+    <!-- Annuler -->
+    <!-- make ajax -->
+    <a hx-get="{% url 'cancel_bilan' consultation.id %}" data-bs-dismiss="modal" class="btn btn-secondary">
+        <span style="text-transform: none;">Annuler</span>
+    </a>
+    <!-- sauvgarder -->
+    <a data-bs-dismiss="modal" class="btn btn-success">
+        <span style="text-transform: none;">Sauvgarder</span>
+    </a>
+</div>
+<script>
+    // flatpicker code
+    flatpickr("#todayOrd", {
+        locale: "fr",
+        enableTime: false,
+        dateFormat: "d-m-Y",
+        altInput: true,
+        altFormat: "l j F Y"
+    });
+    $(function() {
+        $("#testsearch").autocomplete({
+            source: "{% url 'autocomplete_test' %}"
+        });
+    });
+    // search test name for bilan
+    dselect(document.querySelector('#test-bilan-search'), {
+      search: true,
+      clearable: true,
+       maxHeight: '300px',
+    })
+</script>

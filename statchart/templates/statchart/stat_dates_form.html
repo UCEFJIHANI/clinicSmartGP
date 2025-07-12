@@ -1,0 +1,57 @@
+{% load widget_tweaks %}
+
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+<form hx-post="{{ request.path }}" class="modal-content">
+    {% csrf_token %}
+    <div class="modal-header">
+        <h5>Modifier la période des statistiques</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <!-- display not unique -->
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}
+                <p>{{ error|escape }}</p>
+                {% endfor %}
+            </div>
+    {% endif %}
+
+    <div class="modal-body row g-3">
+        <div class="col-md-6">
+            <label for="stat_date1" class="form-label">Du* :</label>
+            {% render_field form.date1 class="form-control" id="stat_date1" %}
+            <div class="invalid-feedback">{{ form.date1.errors|first }}</div>
+        </div>
+        <div class="col-md-6">
+            <label for="stat_date2" class="form-label">Au* :</label>
+            {% render_field form.date2 class="form-control" id="stat_date2" %}
+            <div class="invalid-feedback">{{ form.date2.errors|first }}</div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+    </div>
+</form>
+{% endwith %}
+
+<script>
+    // flatpicker code
+    flatpickr("#stat_date1", {
+        locale: "fr",
+        maxDate: "today",
+        enableTime: false,
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "l j F Y"
+    });
+    flatpickr("#stat_date2", {
+        locale: "fr",
+        maxDate: "today",
+        enableTime: false,
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "l j F Y"
+    });
+</script>

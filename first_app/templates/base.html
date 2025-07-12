@@ -1,0 +1,312 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3yadaty</title>
+    <!-- App icon -->
+    <link rel="icon" href="{% static 'img/logo_iyadati.png' %}" type="image/x-ico" />
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="{% static 'my_css/google_fonts.css' %}" />
+    <!-- font awsome -->
+    <link rel="stylesheet" href="{% static 'fontawesome_6.1.1/css/all.min.css' %}">
+    <!-- my css -->
+    <link rel="stylesheet" href="{% static 'my_css/base.css' %}">
+
+    <!-- Bootstrap CSS -->
+    <link href="{% static 'bootstrap-5.0.2/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- MDB -->
+    <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}" />
+    <!-- jq css -->
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
+    <!-- dselect -->
+    <link rel="stylesheet" href="{% static 'css/dselect.min.css' %}">
+    <!-- sweet alert -->
+    <link rel="stylesheet" href="{% static 'sweetalert/sweetalert2.min.css' %}">
+    <!-- flatpickr css -->
+    <link rel="stylesheet" href="{% static 'flatpickr/dist/flatpickr.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'flatpickr/dist/themes/dark.css' %}">
+</head>
+
+<body>
+    <!-- sidebar -->
+    <div class="sidebar close">
+        <div class="logo-details mt-5">
+            <!-- <i class="fa-solid fa-stethoscope"></i> -->
+            <img src="{% static "img/logo.png" %}" alt="" style="max-width:100%; height:auto;">
+            <!-- <span class="logo_name">Nom de la Clinique</span> -->
+        </div>
+        <ul class="nav-links">
+            <!-- Accueil -->
+            <li>
+                <a href="{% url 'dashboard' %}">
+
+                    <i class="fa-solid fa-house" {% if section == 'dashboard' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                    <span class='link_name' {% if section == 'dashboard' %}style="color: #00FFFF; opacity: 1;" {% endif %}>Accueil</span>
+                </a>
+            </li>
+            <!-- Patients -->
+            <li id="active-link">
+                <div class="iocn-link">
+                    <a href="{% url 'patients'%}">
+                        <i class="fa-solid fa-users" {% if section == 'patients' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                        <span class='link_name' {% if section == 'patients' %}style="color: #00FFFF; opacity: 1;" {% endif %}>Patients</span>
+                    </a>
+                    <i class="fa-solid fa-chevron-down arrow"></i>
+                </div>
+                <ul class="sub-menu">
+                    <li>
+                        <a href="{% url 'patients'%}" class="link_name">
+                            <i class="fa-solid fa-users" {% if section == 'patients' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                            <span {% if section == 'patients' %}style="color: #00FFFF; opacity: 1;" {% endif %}>Patients</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'patients'%}">
+                            <i class="fa-solid fa-list" {% if section == 'patients' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                            <span {% if section == 'patients' %}style="color: #00FFFF; opacity: 1;" {% endif %}>List des patients</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'full_add_patient' %}">
+                            <i class="fa-solid fa-user-plus" {% if section == 'add_patient' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                            <span {% if section == 'add_patient' %}style="color: #00FFFF; opacity: 1;" {% endif %}>Ajouter un patient</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- Randez-vous -->
+            <li>
+                <div class="iocn-link">
+                    <a href="{% url 'appointements' %}">
+                        <i class="fa-solid fa-calendar-check" {% if section == 'appointements' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                        <span class='link_name' {% if section == 'appointements' %}style="color: #00FFFF; opacity: 1;" {% endif %}>Rendez-vous</span>
+                    </a>
+                    <i class="fa-solid fa-chevron-down arrow"></i>
+                </div>
+                <ul class="sub-menu">
+                    <li>
+                        <a href="{% url 'appointements' %}" class="link_name">
+                            <i class="fa-solid fa-calendar-check" {% if section == 'appointements' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                            <span {% if section == 'appointements' %}style="color: #00FFFF; opacity: 1;" {% endif %}>Rendez-vous</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'appointements' %}">
+                            <i class="fa-solid fa-list-check" {% if section == 'appointements' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                            <span {% if section == 'appointements' %}style="color: #00FFFF; opacity: 1;" {% endif %}>List des Rendez-vous</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'add_appointement' %}">
+                            <i class="fa-solid fa-calendar-plus" {% if section == 'add_appointement' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                            <span {% if section == 'add_appointement' %}style="color: #00FFFF; opacity: 1;" {% endif %}>Ajouter un Rendez-vous</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- Consultations -->
+            <li>
+                <div class="iocn-link">
+                    <a href="{% url 'consultations' %}">
+                        <i class="fa-solid fa-clipboard-list" {% if section == 'consultations' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                        <span class='link_name' {% if section == 'consultations' %}style="color: #00FFFF; opacity: 1;" {% endif %}>Consultations</span>
+                    </a>
+                    <i class="fa-solid fa-chevron-down arrow"></i>
+                </div>
+                <ul class="sub-menu">
+                    <li>
+                        <a href="{% url 'consultations' %}" class="link_name">
+                            <i class="fa-solid fa-clipboard-list" {% if section == 'consultations' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                            <span {% if section == 'consultations' %}style="color: #00FFFF; opacity: 1;" {% endif %}>Consultations</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'consultations' %}">
+                            <i class="fa-solid fa-list-check" {% if section == 'consultations' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                            <span {% if section == 'consultations' %}style="color: #00FFFF; opacity: 1;" {% endif %}>List des Consultations</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'patient_consultation' %}">
+                            <i class="fa-solid fa-notes-medical" {% if section == 'add_consultation' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                            <span {% if section == 'add_consultation' %}style="color: #00FFFF; opacity: 1;" {% endif %}>Ajouter une Consultation</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- Paramètres -->
+            <li>
+                <div class="iocn-link">
+                    <a href="{% url 'render_info_doctor' %}">
+                        <i class="fa-solid fa-screwdriver-wrench" {% if section == 'render_info_doctor' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                        <span class='link_name' {% if section == 'render_info_doctor' %}style="color: #00FFFF; opacity: 1;" {% endif %}>Paramètres</span>
+                    </a>
+                    <i class="fa-solid fa-chevron-down arrow"></i>
+                </div>
+                <!-- to change later -->
+                <ul class="sub-menu">
+                    <li>
+                        <a href="{% url 'render_info_doctor' %}" class="link_name">
+                            <i class="fa-solid fa-screwdriver-wrench" {% if section == 'render_info_doctor' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                            <span {% if section == 'render_info_doctor' %}style="color: #00FFFF; opacity: 1;" {% endif %}>Paramètres</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'render_info_doctor' %}">
+                            <i class="fas fa-user-md" {% if section == 'render_info_doctor' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                            <span {% if section == 'render_info_doctor' %}style="color: #00FFFF; opacity: 1;" {% endif %}>Données de la clinique</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'export_excel' %}">
+                            <i class="fas fa-file-download" {% if section == 'export_data' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                            <span {% if section == 'export_data' %}style="color: #00FFFF; opacity: 1;" {% endif %}>Exporter des données</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'change_password' %}">
+                            <i class="fas fa-sign-in-alt" {% if section == 'change_password' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                            <span {% if section == 'change_password' %}style="color: #00FFFF; opacity: 1;" {% endif %}>Authentification</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- statistiques -->
+            <li>
+                <a href="{% url 'stats_page' %}">
+                    <i class="fas fa-chart-pie" {% if section == 'stats' %}style="color: #00FFFF; opacity: 1;" {% endif %}></i>
+                    <span class='link_name' {% if section == 'stats' %}style="color: #00FFFF; opacity: 1;" {% endif %}>Statistiques</span>
+                </a>
+            </li>
+            <li>
+                <div class="profile-details">
+                    <div class="profile-content">
+                        {% if request.user.profile.photo %}
+                        <img src="{{ request.user.profile.photo.url }}" alt="profile">
+                        {% else %}
+                        <img src="{% static 'img/profile.jpeg' %}" alt="profile">
+                        {% endif %}
+                    </div>
+
+                    <div class="name-job">
+                        <div class="profile-name">
+                            {{ request.user.username|lower|capfirst }}
+                        </div>
+                    </div>
+                    {% if request.user.is_superuser %}
+                    <div class="profile-name">
+                        <a href="{% url 'admin:index' %}">Admin</a>
+                    </div>
+                    {% endif %}
+                    <!-- logout -->
+                    <a href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i></a>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <!-- The content section -->
+    <section class="home-section">
+            <div class="home-content">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+            <!-- The title content -->
+            <div class="content-first-title">
+                <h1>{% block title %}{% endblock %}</h1>
+            </div>
+        <!-- The content block -->
+        <div class="container-fluid">
+            {% block content %}{% endblock %}
+
+            <!-- messages -->
+            <div style="position: absolute; z-index: 1000; left: 50%; top: 50%; transform: translate(-50%, -50%);" id="message_container">
+                {% for message in messages %}
+                <span style="display:inline-block; padding: 10px 20px;" class="alert {{ message.tags }} alert-dismissible shadow fade show text-center" role="alert">
+                    {% if message.tags == 'alert-success' %}<i class="fa-solid fa-circle-check" style="font-size: 20px;"></i>{% endif %}
+                    {% if message.tags == 'alert-danger' %}<i class="fas fa-exclamation-triangle" style="font-size: 20px;"></i>{% endif %}
+                    {% if message.tags == 'alert-info' %}<i class="fas fa-info-circle" style="font-size: 20px;"></i>{% endif %}
+                    <span style="padding-left: 15px;">{{ message | safe }}</span>
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <!-- modal container -->
+    <div id="modal" class="modal fade" style="z-index: 5000;" tabindex="-1">
+        <div id="dialog" class="modal-dialog modal-xl" hx-target="this">
+            <!-- ingect html here -->
+        </div>
+    </div>
+
+    <!-- htmx javascript -->
+    <script src="{% static 'js/htmx.min.js' %}"></script>
+    <!-- sweet alert -->
+    <script src="{% static 'sweetalert/sweetalert2.all.min.js' %}"></script>
+    <!-- MDB -->
+    <!-- Scripts: Bootstraps -->
+    <script src="{% static 'js/dselect.min.js' %}"></script>
+    <script src="{% static 'bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/dialog.js' %}"></script>
+    <!-- flatpickr -->
+    <script src="{% static 'flatpickr/dist/flatpickr.min.js' %}"></script>
+    <script src="{% static 'flatpickr/dist/l10n/fr.js' %}"></script>
+    <!-- chart.js code -->
+    <script src="{% static 'chartJS/chart.min.js' %}"></script>
+    <!-- Javascript code -->
+    <script>
+        // add respinsvenisse to sidebar
+        $(document).ready(function() {
+            /* Check width on page load*/
+            if ($(window).width() < 1600) {
+                $('.sidebar').addClass('close');
+            } else {}
+        });
+        $(window).resize(function() {
+            /*If browser resized, check width again */
+            if ($(window).width() < 1600) {
+                $('.sidebar').addClass('close');
+            } else {}
+        });
+
+        // on reload add close to sidebar
+        window.onload = function() {
+            if (localStorage && localStorage.getItem("closeSide") && localStorage.getItem("closeSide") === "no")
+                sidebar.classList.remove("close");
+        };
+        // sidebar dropdown list
+        let arrow = document.querySelectorAll('.arrow');
+        for (var i = 0; i < arrow.length; i++) {
+            arrow[i].addEventListener("click", (e) => {
+                let arrowParent = e.target.parentElement.parentElement;
+                arrowParent.classList.toggle("showMenu");
+            });
+        }
+        //
+        let sidebar = document.querySelector(".sidebar");
+        let sidebarBtn = document.querySelector(".fa-bars");
+        sidebarBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("close");
+            if (sidebar.classList.contains('close')) {
+                localStorage.setItem("closeSide", "yes");
+            } else {
+                localStorage.setItem("closeSide", "no");
+            }
+        });
+        // messages disabear
+        var message_ele = document.getElementById("message_container");
+
+        setTimeout(function() {
+            message_ele.style.display = "none";
+        }, 3000);
+        // Timeout is 3 sec, you can change it
+    </script>
+    {% block script %}
+    {% endblock %}
+</body>
+
+</html>

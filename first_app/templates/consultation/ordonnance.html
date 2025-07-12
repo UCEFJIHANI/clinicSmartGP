@@ -1,0 +1,163 @@
+{% load widget_tweaks %}
+<div class="modal-header">
+    <h4 class="modal-title">Ordonnance</h4>
+</div>
+<div class="container"></div>
+<div class="modal-body">
+    <div class="first-modal-links">
+        <!-- Apercu et imprimer -->
+        <div>
+            <button data-bs-toggle="modal" href="#myModal2" type="button" class="btn btn-primary" id="testPrintOrd">
+                <i class="fas fa-search me-2" style="font-size: 15px;"></i>
+                <span style="text-transform: None;">Aperçu et imprimer</span>
+            </button>
+        </div>
+    </div>
+    <!-- patient data -->
+    <div class="ordonnance-patient-data">
+        <fieldset disabled>
+            <!-- patient name -->
+            <div class="row mb-2">
+                <label for="ordPatientname" class="col-sm-1 col-form-label">Patient</label>
+                <div class="col-sm-11">
+                    <input type="text" class="form-control" id="ordPatientname" value="{{ patient.full_name }}">
+                </div>
+            </div>
+            <!-- age and date -->
+            <div class="row">
+                <div class="col-6">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-2">
+                            <label for="ordPatientage" class="col-form-label">Age</label>
+                        </div>
+                        <div class="col-10">
+                            <input type="text" id="ordPatientage" class="form-control" value="{{ patient.age }} ans">
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-2">
+                            <label for="todayOrd" class="col-form-label">date</label>
+                        </div>
+                        <div class="col-10">
+                            {% render_field date_form.today id="todayOrd" class="form-control" %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <!-- List des medicaments -->
+    <div class="ordonnance-patient-data">
+        <div id="medicament-table">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th style="text-align: left;" scope="col">Médicament</th>
+                        <th style="text-align: center;" scope="col">Posologie</th>
+                        <th style="text-align: right;" scope="col">Qté</th>
+                        <th style="text-align: right;" scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in medicaments %}
+                    <tr>
+                        <td style="text-align: left;">
+                            <strong>{{m.name|lower|capfirst}}</strong>
+                         </td>
+                        <td style="text-align: center;">{{m.posologie|lower|capfirst}}</td>
+                        <td style="text-align: right;">{{m.nbr_unite|lower|capfirst}}</td>
+                        <td style="text-align: right;">
+                            <span style="color: red; cursor: pointer;" hx-get="{% url 'delete_medicament' m.id %}" hx-target="#medicament-table">
+                                <i class="fas fa-trash-alt"></i>
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- test form here -->
+        <hr>
+        <form class="mt-3" id="add-medicament-form" hx-post="{% url 'add_medicament' consultation.id %}" hx-target="#medicament-table">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-5">
+                    {% render_field form.name id="medicamentsearch"  class="form-control" placeholder="Médicament" %}
+                </div>
+                <div class="col-3">
+                    {% render_field form.posologie id="posologiesearch" class="form-control" placeholder="Posologie" %}
+                </div>
+                <div class="col-4">
+                    {% render_field form.nbr_unite id="qtesearch" class="form-control" placeholder="Qté" %}
+                </div>
+            </div>
+            <div class="col-12 mt-2">
+                <button id="submit-add-medicament-form" type="submit" class="btn btn-primary">
+                    <span style="text-transform: none;">Ajouter</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+
+</div>
+<div class="modal-footer">
+    <!-- Annuler -->
+    <a hx-get="{% url 'cancel_ordonnance' consultation.id %}" data-bs-dismiss="modal" class="btn btn-secondary">
+        <span style="text-transform: none;">Annuler</span>
+    </a>
+    <!-- sauvgarder -->
+    <!-- make ajax -->
+    <a data-bs-dismiss="modal" class="btn btn-success">
+        <span style="text-transform: none;">Sauvgarder</span>
+    </a>
+</div>
+<script>
+    // flatpicker code
+    flatpickr("#todayOrd", {
+        locale: "fr",
+        enableTime: false,
+        dateFormat: "d-m-Y",
+        altInput: true,
+        altFormat: "l j F Y"
+    });
+    $(function() {
+        $("#medicamentsearch").autocomplete({
+            source: "{% url 'autocomplete_medicament' %}"
+        });
+    });
+
+    // auto complete
+    function split(val) {
+        return val.split(/,\s*/);
+    }
+
+    function extractLast(term) {
+        return split(term).pop();
+    }
+    // posologie
+    $(function() {
+        $("#posologiesearch").autocomplete({
+            minLength: 0,
+            source: "{% url 'autocomplete_posologie' %}",
+        });
+    });
+  // autocomplete_quantite
+  $(function() {
+      $("#qtesearch").autocomplete({
+          minLength: 0,
+          source: "{% url 'autocomplete_quantite' %}",
+      });
+  });
+
+
+    // reset form
+    $('#submit-add-medicament-form').click(function() {
+
+        setTimeout(function() {
+            $('#add-medicament-form')[0].reset();
+        }, 500);
+    });
+</script>

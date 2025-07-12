@@ -1,0 +1,7 @@
+<div class="p-4">
+    <h5>Prorochain rendez-vouz le : {{ appointement.date|date:"d/m/Y" }}, à {{appointement.hour|date:"H:i"}} </h5>
+
+    <button type="button" class="btn btn-primary btn-sm" hx-get="{% url 'edit_appointement_consultation' appointement.id %}"  hx-target="#parent-div">
+        <span style="text-transform: None;">Modified ce RDV</span>
+    </button>
+</div>

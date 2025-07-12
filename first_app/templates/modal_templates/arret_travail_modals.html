@@ -1,0 +1,26 @@
+<div class="modal" id="arretModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" hx-get="{% url 'arret_travail' consultation.id %}" hx-trigger="click from:#arret-travail-btn">
+            <!-- content here -->
+        </div>
+    </div>
+</div>
+<div class="modal" id="arretModal2" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <!-- "every 2s" "load, click from:#testPrintOrd" to try later-->
+        <div class="modal-content" hx-get="{% url 'arret_travail_pdf' consultation.id %}"
+         hx-trigger="arretTravailChanged from:body" hx-target="#arret-travail-overview-body">
+         <div class="modal-header">
+             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+            <!-- modal-body -->
+            <div id="arret-travail-overview-body" style="width: 100%;">
+                <p style="text-align: center; margin: 10px;" >Veuillez  ajouter un arrêt de travail svp!</p>
+            </div>
+            <!-- footer -->
+            <div class="modal-footer">
+                <a href="#" data-bs-dismiss="modal" class="btn btn-info">Fermer</a>
+            </div>
+        </div>
+    </div>
+</div>

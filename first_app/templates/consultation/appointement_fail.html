@@ -1,0 +1,64 @@
+{% load widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+<form class="modal-content" hx-post="{{ request.path }}">
+    {% csrf_token %}
+    <div class="modal-header">
+        <h4>Nouveau rendez-vous</h4>
+    </div>
+    <!-- display not unique -->
+    {% if app_form.non_field_errors %}
+    <div class="alert alert-danger">
+        {% for error in app_form.non_field_errors %}
+        <p>{{ error|escape }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="modal-body row g-3">
+        <div class="col-md-6">
+            <label for="date" class="form-label">Choississez une date * :</label>
+            <div class="input-group flex-nowrap">
+                <span class="input-group-text"><i class="far fa-calendar"></i></span>
+                {% render_field app_form.date class="form-control" id="date" placeholder="Aucune date sélectionnée" %}
+                <div class="invalid-feedback">{{ app_form.date.errors|first }}</div>
+            </div>
+
+        </div>
+        <div class="col-md-6">
+            <label for="hour" class="form-label">Choississez un temps * :</label>
+            <div class="input-group flex-nowrap">
+                <span class="input-group-text"><i class="far fa-clock"></i></span>
+                {% render_field app_form.hour class="form-control" id="hour" placeholder="Aucune heure sélectionnée" %}
+                <div class="invalid-feedback">{{ app_form.hour.errors|first }}</div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">
+            {% if add %} Ajouter {% else %} Modifier {% endif %}
+        </button>
+    </div>
+</form>
+{% endwith %}
+
+<script>
+    // flatpicker code
+    flatpickr("#date", {
+        locale: "fr",
+        minDate: "today",
+        enableTime: false,
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "l j F Y"
+    });
+    flatpickr("#hour", {
+        locale: "fr",
+        enableTime: true,
+        dateFormat: "H:i",
+        altInput: true,
+        altFormat: "H:S",
+        noCalendar: true,
+    });
+</script>

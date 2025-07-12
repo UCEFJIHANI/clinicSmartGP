@@ -1,0 +1,33 @@
+<form id="searchAnalyseForm" class="d-flex justify-content-end"
+ hx-post="{% url 'add_chart' patient.id %}"
+ hx-target="#chart" hx-swap="outerHTML">{% csrf_token %}
+    <div class="input-group d-flex justify-content-center">
+        <div style="width: 80%;">
+            <select name="dropdownanalyse" class="form-select" id="example-search">
+                <option value="">Ajouter un test</option>
+                {% for test in test_names %}
+                <option value="{{ test }}">{{ test }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button style="width: 10%;" type="submit" id="submitsearchAnalyse" class="btn btn-primary">
+            <i class="fas fa-plus" style="font-size: 20px;"></i>
+        </button>
+    </div>
+</form>
+<script>
+    // reset form after submit
+    $('#submitsearchAnalyse').click(function() {
+
+        setTimeout(function() {
+            $('#searchAnalyseForm')[0].reset();
+        }, 500);
+    });
+    // search
+    dselect(document.querySelector('#example-search'), {
+        search: true,
+        clearable: true,
+        maxHeight: '300px',
+    })
+    // modal script
+</script>

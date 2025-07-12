@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Ajouter un nouveau patient{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 40px;">
+    {% with WIDGET_ERROR_CLASS='is-invalid' %}
+    <form method="post" class="modal-content">
+        {% csrf_token %}
+        <div class="modal-header">
+            <h4>Informations du patient</h4>
+        </div>
+        <!-- display not unique -->
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}
+            <p>{{ error|escape }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="modal-body row g-3">
+            <div class="col-md-6">
+                <label for="first_name" class="form-label">Prénom *:</label>
+                {% render_field form.first_name class="form-control mb-3" id="first_name" %}
+                <div class="invalid-feedback">{{ form.first_name.errors|first }}</div>
+            </div>
+            <div class="col-md-6">
+                <label for="last_name" class="form-label">Nom *:</label>
+                {% render_field form.last_name class="form-control mb-3" id="last_name" %}
+                <div class="invalid-feedback">{{ form.last_name.errors|first }}</div>
+            </div>
+            <div class="col-md-6">
+                <label for="year_of_birth" class="form-label">Année de naissance *:</label>
+                {% render_field form.year_of_birth class="form-control mb-3" id="year_of_birth" placeholder="ex: 1995" %}
+                <div class="invalid-feedback">{{ form.year_of_birth.errors|first }}</div>
+            </div>
+            <div class="col-md-6">
+                <label for="sexe" class="form-label">Sexe *:</label>
+                {% render_field form.sexe class="form-control form-select mb-3" id="sexe"%}
+                <div class="invalid-feedback">{{ form.sexe.errors|first }}</div>
+            </div>
+            <div class="col-md-6">
+                <label for="cnie" class="form-label">CNIE :</label>
+                {% render_field form.cnie class="form-control" id="cnie"%}
+                <div class="invalid-feedback">{{ form.cnie.errors|first }}</div>
+            </div>
+            <div class="col-md-6">
+                <label for="mutuelle" class="form-label">Mutuelle :</label>
+                {% render_field form.mutuelle class="form-control form-select" id="mutuelle"%}
+                <div class="invalid-feedback">{{ form.mutuelle.errors|first }}</div>
+            </div>
+            <div class="col-md-6">
+                <label for="phone_number" class="form-label">Mobile :</label>
+                {% render_field form.phone_number class="form-control mb-3" id="phone_number"%}
+                <div class="invalid-feedback">{{ form.phone_number.errors|first }}</div>
+            </div>
+            <div class="col-md-6">
+                <label for="email" class="form-label">E-mail :</label>
+                {% render_field form.email class="form-control mb-3" id="email"%}
+                <div class="invalid-feedback">{{ form.email.errors|first }}</div>
+            </div>
+            <div class="col-md-12">
+                <label for="address" class="form-label">Adresse :</label>
+                {% render_field form.address class="form-control mb-3" id="address"%}
+                <div class="invalid-feedback">{{ form.address.errors|first }}</div>
+            </div>
+        </div>
+
+
+        <div class="modal-footer">
+            <a href="{% url 'patients' %}" class="btn btn-secondary">Annuler</a>
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+        </div>
+    </form>
+</div>
+{% endwith %}
+{% endblock %}

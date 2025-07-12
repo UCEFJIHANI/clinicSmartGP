@@ -1,0 +1,64 @@
+{% load widget_tweaks %}
+
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+<form hx-post="{{ request.path }}" class="modal-content">
+    {% csrf_token %}
+    <div class="modal-header">
+        <h5>Modifier le rendez-vous de {{ appointement.patient.name }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <!-- display not unique -->
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}
+                <p>{{ error|escape }}</p>
+                {% endfor %}
+            </div>
+    {% endif %}
+
+    <div class="modal-body row g-3">
+        <div class="col-md-6">
+            <label for="date" class="form-label">Choississez une date * :</label>
+            <div class="input-group flex-nowrap">
+                <span class="input-group-text"><i class="far fa-calendar"></i></span>
+                {% render_field form.date class="form-control" id="date" placeholder="Aucune date sélectionnée" %}
+                <div class="invalid-feedback">{{ form.date.errors|first }}</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <label for="hour" class="form-label">Choississez un temps * :</label>
+            <div class="input-group flex-nowrap">
+                <span class="input-group-text"><i class="far fa-clock"></i></span>
+                {% render_field form.hour class="form-control" id="hour" placeholder="Aucune heure sélectionnée" %}
+                <div class="invalid-feedback">{{ form.hour.errors|first }}</div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="submit" class="btn btn-primary">Modifier</button>
+    </div>
+
+</form>
+{% endwith %}
+<script>
+    // flatpicker code
+    flatpickr("#date", {
+        locale: "fr",
+        enableTime: false,
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "l j F Y"
+    });
+    flatpickr("#hour", {
+        locale: "fr",
+        enableTime: true,
+        dateFormat: "H:i",
+        altInput: true,
+        altFormat: "H:S",
+        noCalendar: true,
+    });
+</script>

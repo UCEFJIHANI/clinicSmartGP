@@ -1,0 +1,20 @@
+date,motif,antecedant,diagnostique,examen,poids_kg,taille_cm,imc,sao2,temperature_degC,frequence_cardiaque,pression_arterielle
+2022-07-31 20:03:20.950601,Constipation,Perturbation de la vision,Autre acariose,État anxieux,89,189,24.915315920606925,66,36,65,9
+2022-07-01 20:03:20.950708,Constipation,Rencontre de suivi,Hépatite virale,Reflux gastro-œsophagien,63,173,21.04981790236894,62,39,72,7
+2022-06-01 20:03:20.950747,Perturbation de la vision,Toux,Gale,Gestion santé,69,179,21.534908398614277,79,35,71,7
+2022-05-02 20:03:20.950777,Symptôme ou plainte du genou,Douleur ou crampes abdominales généralisées,État anxieux,Gale,61,187,17.444021847922443,90,36,71,7
+2022-04-02 20:03:20.950807,Rencontre de suivi,Douleur ou crampes abdominales généralisées,Céphalée de tension,Symptôme ou plainte musculaire,72,180,22.22222222222222,53,38,70,9
+2022-03-03 20:03:20.950839,Douleur ou crampes abdominales généralisées,Rencontre de suivi,État anxieux,État anxieux,78,157,31.64428577224228,73,37,68,8
+2022-02-01 20:03:20.950870,Mal de tête,Constipation,Troubles anxieux,État anxieux,92,170,31.83391003460208,65,35,77,10
+2022-01-02 20:03:20.950899,Rencontre de suivi,Prurit,Agression ou événement nocif,Céphalée de tension,82,174,27.08415906989034,47,35,76,10
+2021-12-03 20:03:20.950928,Éruption localisée,Symptôme ou plainte du genou,Gale,Agression ou événement nocif,79,179,24.65590961580475,37,39,66,8
+2021-11-03 20:03:20.950961,Symptôme ou plainte des dents ou gencives,Prurit,Gestion santé,Infection aiguë des voies respiratoires supérieures,79,162,30.102118579484827,55,35,77,7
+2021-10-04 20:03:20.950990,Mal de tête,Toux,Constipation,Sécheresse cutanée,61,170,21.107266435986162,81,37,61,8
+2021-09-04 20:03:20.951019,Fièvre,Résultats analyses ou examens,Autre acariose,Céphalée de tension,73,163,27.475629493018182,29,37,60,8
+2021-08-05 20:03:20.951047,Résultats analyses ou examens,Toux,Gale,Gale,92,166,33.386558281318045,55,39,60,10
+2021-07-06 20:03:20.951075,Douleur ou crampes abdominales généralisées,Prurit,Médecine préventive,Sécheresse cutanée,63,188,17.824807605251245,99,39,67,9
+2021-06-06 20:03:20.951552,Rencontre de suivi,Fièvre,Troubles anxieux,État anxieux,86,167,30.83653053175087,46,38,72,9
+2021-05-07 20:03:20.951593,Constipation,Mal de tête,Hépatite virale,Douleur ou crampes abdominales généralisées,92,158,36.85306841852267,32,37,77,8
+2021-04-07 20:03:20.951614,Symptôme ou plainte des dents ou gencives,Mal de tête,Troubles anxieux,Symptôme ou plainte musculaire,78,189,21.83589485176787,78,38,64,11
+2021-03-08 20:03:20.951635,Symptôme ou plainte des dents ou gencives,Symptôme ou plainte du genou,Céphalée de tension,Constipation,66,176,21.306818181818183,66,36,70,8
+2021-02-06 20:03:20.951653,Rencontre de suivi,Symptôme ou plainte du genou,Autre acariose,Hépatite virale,64,176,20.66115702479339,57,37,67,7

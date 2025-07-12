@@ -1,0 +1,12 @@
+.stats-title {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.stats-title button {
+    margin-left: 20px;
+}
+.chart {
+    display: flex;
+    justify-content:center;
+}

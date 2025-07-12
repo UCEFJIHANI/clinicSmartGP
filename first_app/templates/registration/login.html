@@ -1,0 +1,61 @@
+{% load widget_tweaks %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3yadaty</title>
+    <!-- App icon -->
+    <link rel="icon" href="{% static 'img/stethoscope-solid.svg' %}" type="image/x-ico" />
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="{% static 'my_css/google_fonts.css' %}" />
+    <!-- font awsome -->
+    <link rel="stylesheet" href="{% static 'fontawesome_6.1.1/css/all.min.css' %}">
+    <!-- my styling -->
+    <link rel="stylesheet" href="{% static 'my_css/style_login.css' %}">
+</head>
+
+<body style="background-image: '{% static 'img/doctors.jpg' %}'; background-repeat: no-repeat;">
+    <!-- Start project here-->
+    <div class="container">
+        <div class="header">
+            <h1>Se connecter</h1>
+        </div>
+        <div class="main">
+            <form action="{% url 'login' %}" method="post">
+                {% csrf_token %}
+                <span>
+                    <i class="fa-solid fa-user-doctor"></i>
+                    {% render_field form.username placeholder="Nom d utilisateur" %}
+                </span><br>
+                <span>
+                    <i class="fa-solid fa-lock"></i>
+                    {% render_field form.password  placeholder="Mot de passe" %}
+                </span><br>
+                <!-- error display -->
+                {% if form.errors %}
+                    {% for field in form %}
+                        {% if field.errors %}
+                            {% for error in field.errors %}
+                                    <p style="color:red;">{{ error|escape }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                            <p style="color:red;">{{ error|escape }}</p>
+                        {% endfor %}
+                    {% endif %}
+                {% endif %}
+                <button type="submit">Se connecter</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- End your project here-->
+
+</body>
+
+</html>

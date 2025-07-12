@@ -1,0 +1,50 @@
+<div class="modal-content" style="max-width: 600px;">
+    <div class="modal-header">
+        <h4>Les consultations</h4>
+    </div>
+    <div class="modal-body">
+            <canvas id="consultation-chart" data-url="{% url 'consultation_chart_data' %}"></canvas>
+    </div>
+</div>
+
+<script>
+    $(function() {
+
+        var $consultationChart = $("#consultation-chart");
+        $.ajax({
+            url: $consultationChart.data("url"),
+            success: function(data) {
+
+                var ctx = $consultationChart[0].getContext("2d");
+
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Consultation',
+                            backgroundColor: [
+                                'rgb(255, 99, 132)',
+                                'rgb(54, 162, 235)'
+                            ],
+                            data: data.data,
+                             hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Consultations'
+                        }
+                    }
+                });
+
+            }
+        });
+
+    });
+</script>
