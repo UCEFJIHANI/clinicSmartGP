@@ -34,5 +34,11 @@ ENV PYTHONUNBUFFERED=1 \
 
 EXPOSE $PORT
 
+# Ajoute ce fichier Python
+COPY createsuper.py /app/createsuper.py
 # Commande de lancement
-CMD ["bash", "-c", "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn clinicSmart.wsgi --bind 0.0.0.0:$PORT"]
+CMD ["bash", "-c", "python manage.py collectstatic --noinput && python manage.py migrate && python createsuper.py && gunicorn clinicSmart.wsgi --bind 0.0.0.0:$PORT"]
+
+
+
+
