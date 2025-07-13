@@ -1,30 +1,24 @@
-# Utilise une image officielle Python
-FROM python:3.11-slim
+# Utilise une image officielle Python avec plus de paquets préinstallés
+FROM python:3.11-bullseye
 
-# Étape 1: Installer les dépendances système
+# Étape 1: Installer les dépendances système minimales
 RUN apt-get update && apt-get install -y \
     curl \
     unzip \
     libpango-1.0-0 \
     libcairo2 \
-    libgdk-pixbuf2.0-0 \
-    libffi-dev \
-    shared-mime-info \
-    fonts-liberation \
-    libjpeg-dev \
-    libpng-dev \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Étape 2: Configurer l'environnement
 WORKDIR /app
 
-# Étape 3: Télécharger les assets nécessaires (version alternative avec curl)
+# Étape 3: Télécharger directement les images nécessaires depuis CDN
 RUN mkdir -p static/css/images/ && \
-    curl -o /tmp/jquery-ui-icons.zip https://jqueryui.com/resources/download/jquery-ui-1.13.2.zip && \
-    unzip /tmp/jquery-ui-icons.zip -d /tmp && \
-    cp /tmp/jquery-ui-1.13.2/themes/base/images/* static/css/images/ && \
-    rm -rf /tmp/jquery-ui*
+    cd static/css/images/ && \
+    curl -O https://code.jquery.com/ui/1.13.2/themes/base/images/ui-icons_444444_256x240.png && \
+    curl -O https://code.jquery.com/ui/1.13.2/themes/base/images/ui-icons_555555_256x240.png && \
+    curl -O https://code.jquery.com/ui/1.13.2/themes/base/images/ui-bg_flat_75_ffffff_40x100.png
 
 # Étape 4: Installer les dépendances Python
 COPY requirements.txt .
