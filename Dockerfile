@@ -3,7 +3,7 @@ FROM python:3.11-slim
 
 # Étape 1: Installer les dépendances système
 RUN apt-get update && apt-get install -y \
-    wget \
+    curl \
     unzip \
     libpango-1.0-0 \
     libcairo2 \
@@ -19,12 +19,12 @@ RUN apt-get update && apt-get install -y \
 # Étape 2: Configurer l'environnement
 WORKDIR /app
 
-# Étape 3: Télécharger jQuery UI
-RUN wget https://jqueryui.com/resources/download/jquery-ui-1.12.1.zip && \
-    unzip jquery-ui-1.12.1.zip && \
-    mkdir -p static/css/images/ && \
-    cp jquery-ui-1.12.1/themes/base/images/* static/css/images/ && \
-    rm -rf jquery-ui-1.12.1*
+# Étape 3: Télécharger les assets nécessaires (version alternative avec curl)
+RUN mkdir -p static/css/images/ && \
+    curl -o /tmp/jquery-ui-icons.zip https://jqueryui.com/resources/download/jquery-ui-1.13.2.zip && \
+    unzip /tmp/jquery-ui-icons.zip -d /tmp && \
+    cp /tmp/jquery-ui-1.13.2/themes/base/images/* static/css/images/ && \
+    rm -rf /tmp/jquery-ui*
 
 # Étape 4: Installer les dépendances Python
 COPY requirements.txt .
