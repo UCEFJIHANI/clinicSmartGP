@@ -1,11 +1,9 @@
-# Utilise une image officielle Python avec les dépendances graphiques préinstallées
+# Utilise une image officielle Python avec les outils réseau
 FROM python:3.11-slim
 
-# Définit le répertoire de travail
-WORKDIR /app
-
-# Installe les dépendances système COMPLÈTES pour WeasyPrint
+# Étape 1: Installer les dépendances système (y compris wget)
 RUN apt-get update && apt-get install -y \
+    wget \
     libpango-1.0-0 \
     libcairo2 \
     libgdk-pixbuf2.0-0 \
@@ -15,18 +13,18 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     libpng-dev \
     libpq-dev \
-    pango1.0-tools \
-    libpangoft2-1.0-0 \
-    libpangocairo-1.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Installation des dépendances Python
+# Étape 2: Installer les dépendances Python
+WORKDIR /app
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
-# Ajoutez cette étape après COPY . .
+
+# Étape 3: Télécharger les assets manquants avant la copie du code
 RUN mkdir -p /app/static/css/images/ && \
     wget https://code.jquery.com/ui/1.12.1/themes/base/images/ui-icons_444444_256x240.png -O /app/static/css/images/ui-icons_444444_256x240.png
-# Copie le code de l'application
+
+# Étape 4: Copier le code applicatif
 COPY . .
 
 # Configuration pour la production
@@ -34,11 +32,9 @@ ENV PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=clinicSmart.settings \
     PORT=8000
 
-# Exposition du port
 EXPOSE $PORT
 
-# Commande de lancement optimisée
-CMD bash -c "python manage.py check --deploy && \
+# Commande de lancement
+CMD bash -c "python manage.py collectstatic --noinput && \
              python manage.py migrate && \
-             python manage.py collectstatic --noinput && \
-             gunicorn clinicSmart.wsgi --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+             gunicorn clinicSmart.wsgi --bind 0.0.0.0:$PORT --workers 3 --timeout 120"
