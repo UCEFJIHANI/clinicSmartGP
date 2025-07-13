@@ -19,6 +19,19 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'y@_k9q=+f9v7!t$b8^7m$#5z!*6@5!8j+@u6k
 
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+# Assurez-vous que STATIC_URL est bien défini AVANT l'import des apps
+STATIC_URL = '/static/'  # Doit être avant INSTALLED_APPS
+
+# Configuration TinyMCE explicite
+TINYMCE_JS_URL = f"{STATIC_URL}tinymce/tinymce.min.js"  # Force le chemin
+TINYMCE_COMPRESSOR = False
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': 'silver',
+    'height': 500,
+    'menubar': False,
+    'plugins': 'link image code',
+    'toolbar': 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image code'
+}
 
 # Application definition
 INSTALLED_APPS = [
