@@ -98,8 +98,11 @@ USE_TZ = True
 # Static files
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Solution temporaire si nécessaire
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'  # Version non-manifest
 
+# Ou pour garder Manifest :
+WHITENOISE_MANIFEST_STRICT = False  # Ignorer les fichiers manquants
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
