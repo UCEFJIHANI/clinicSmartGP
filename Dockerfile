@@ -4,9 +4,7 @@ FROM python:3.11-slim
 # Définit le répertoire de travail
 WORKDIR /app
 
-# Copie les fichiers de l'app
-COPY . .
-# Installe les bibliothèques système nécessaires à WeasyPrint
+# Installe les dépendances système
 RUN apt-get update && apt-get install -y \
     libpango-1.0-0 \
     libcairo2 \
@@ -17,20 +15,22 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     libpng-dev \
     libpq-dev \
-    build-essential \
     && rm -rf /var/lib/apt/lists/*
-# Installe les dépendances
+
+# Copie les fichiers nécessaires
+COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Collecte les fichiers statiques
-# RUN python manage.py collectstatic --noinput
+# Copie le reste de l'application
+COPY . .
 
-# Applique les migrations et crée un superuser avec des variables d’env.
-#RUN python manage.py migrate && \
- #   python manage.py createsuperuser --noinput || true
+# Configuration pour la production
+ENV PYTHONUNBUFFERED=1 \
+    DJANGO_SETTINGS_MODULE=clinicSmart.settings \
+    PORT=8000
 
 # Expose le port (Railway utilisera automatiquement $PORT)
-EXPOSE 8000
+EXPOSE $PORT
 
-# Commande de lancement avec gunicorn
-#CMD ["gunicorn", "clinicSmart.wsgi", "--bind", "0.0.0.0:8000"]
+# Commande de lancement (intègre le Procfile)
+CMD bash -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn clinicSmart.wsgi --bind 0.0.0.0:$PORT --workers 3 --timeout 120 --access-logfile -"
