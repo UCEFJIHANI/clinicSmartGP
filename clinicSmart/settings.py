@@ -20,7 +20,12 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'y@_k9q=+f9v7!t$b8^7m$#5z!*6@5!8j+@u6k
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 # Assurez-vous que STATIC_URL est bien défini AVANT l'import des apps
-STATIC_URL = '/static/'  # Doit être avant INSTALLED_APPS
+# Static files configuration
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Assurez-vous que STATIC_URL est défini avant MIDDLEWARE et INSTALLED_APPS
 
 # Configuration TinyMCE explicite
 TINYMCE_JS_URL = f"{STATIC_URL}tinymce/tinymce.min.js"  # Force le chemin
