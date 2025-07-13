@@ -3,9 +3,17 @@ from pathlib import Path  # Nouvelle importation recommandée
 from django.contrib import messages
 import dj_database_url
 from dotenv import load_dotenv  # Pour charger les variables .env en local
+# En haut du fichier
 
-# Charger les variables d'environnement en développement
-load_dotenv()
+from pathlib import Path
+
+# Configuration dotenv (sécurisée)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    print("Warning: python-dotenv not installed. Using system environment variables.")
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'
 BASE_DIR = Path(__file__).resolve().parent.parent  # Version moderne avec pathlib
