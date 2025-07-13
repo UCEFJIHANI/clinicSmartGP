@@ -23,7 +23,9 @@ RUN apt-get update && apt-get install -y \
 # Installation des dépendances Python
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
-
+# Ajoutez cette étape après COPY . .
+RUN mkdir -p /app/static/css/images/ && \
+    wget https://code.jquery.com/ui/1.12.1/themes/base/images/ui-icons_444444_256x240.png -O /app/static/css/images/ui-icons_444444_256x240.png
 # Copie le code de l'application
 COPY . .
 
