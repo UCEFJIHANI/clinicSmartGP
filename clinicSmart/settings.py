@@ -3,40 +3,13 @@ from pathlib import Path
 from django.contrib import messages
 import dj_database_url
 
-# Load environment variables
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    pass  # Silently ignore if python-dotenv not available
-
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Security - Production secret key (NEVER commit this to version control)
-# For development, use a different key in .env file
-SECRET_KEY = os.environ.get('SECRET_KEY', 'y@_k9q=+f9v7!t$b8^7m$#5z!*6@5!8j+@u6k%7!x@$j5+9!')
-
+# Security
+SECRET_KEY = os.environ.get('SECRET_KEY', '#89x69-4usb4y=c3i2%23bhh@-()pr35zdy16xvjykxnfbvc&&')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
-# Assurez-vous que STATIC_URL est bien défini AVANT l'import des apps
-# Static files configuration
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Assurez-vous que STATIC_URL est défini avant MIDDLEWARE et INSTALLED_APPS
-
-# Configuration TinyMCE explicite
-TINYMCE_JS_URL = f"{STATIC_URL}tinymce/tinymce.min.js"  # Force le chemin
-TINYMCE_COMPRESSOR = False
-TINYMCE_DEFAULT_CONFIG = {
-    'theme': 'silver',
-    'height': 500,
-    'menubar': False,
-    'plugins': 'link image code',
-    'toolbar': 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image code'
-}
 
 # Application definition
 INSTALLED_APPS = [
@@ -47,19 +20,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
-    # Third-party
+    'whitenoise.runserver_nostatic',  # Added for static files
     'tinymce',
     'widget_tweaks',
     'django_cleanup.apps.CleanupConfig',
-    'django_extensions',
-    'whitenoise.runserver_nostatic',
-    
-    # Local apps
     'first_app.apps.FirstAppConfig',
     'consultation.apps.ConsultationConfig',
     'statchart.apps.StatchartConfig',
     'appcon.apps.AppconConfig',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -95,20 +64,104 @@ WSGI_APPLICATION = 'clinicSmart.wsgi.application'
 
 # Database
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('PGDATABASE', 'railway'),
-        'USER': os.environ.get('PGUSER', 'postgres'),
-        'PASSWORD': os.environ.get('PGPASSWORD', ''),
-        'HOST': os.environ.get('PGHOST', 'postgres.railway.internal'),
-        'PORT': os.environ.get('PGPORT', '5432'),
-        'OPTIONS': {
-            'sslmode': 'require',  # Obligatoire pour Railway
-            'connect_timeout': 5,  # Timeout de connexion
-        }
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        conn_health_checks=True,
+        ssl_require=True
+    )
 }
 
-# [Rest of your existing configuration remains exactly the same...]
-# (Keep all your password validators, internationalization, 
-# static files, authentication, and other settings exactly as they were)
+# Password validation
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+# Internationalization
+LANGUAGE_CODE = 'fr-FR'
+TIME_ZONE = 'Africa/Casablanca'
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
+
+# Static files
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Authentication
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGOUT_REDIRECT_URL = 'login'
+
+# Messages
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-info',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# TinyMCE
+TINYMCE_DEFAULT_CONFIG = {
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 20,
+    'theme': 'silver',
+    'plugins': '''
+        textcolor save link image media preview codesample contextmenu
+        table code lists fullscreen insertdatetime nonbreaking
+        contextmenu directionality searchreplace wordcount visualblocks
+        visualchars code fullscreen autolink lists charmap print hr
+        anchor pagebreak
+    ''',
+    'toolbar1': '''
+        fullscreen preview bold italic underline | fontselect,
+        fontsizeselect | forecolor backcolor | alignleft alignright |
+        aligncenter alignjustify | indent outdent | bullist numlist table |
+        | visualblocks visualchars |
+        charmap hr pagebreak nonbreaking anchor |
+    ''',
+    'contextmenu': 'formats | link image',
+    'menubar': False,
+    'statusbar': False,
+    'language': 'fr_FR',
+    "fontName": "Arial",
+}
+
+# Security
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+DATA_UPLOAD_MAX_NUMBER_FIELDS = None
+
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
+    X_FRAME_OPTIONS = 'DENY'
+
+# Create staticfiles directory if not exists
+os.makedirs(STATIC_ROOT, exist_ok=True)
