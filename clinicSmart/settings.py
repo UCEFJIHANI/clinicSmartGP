@@ -1,29 +1,21 @@
 import os
-from pathlib import Path  # Nouvelle importation recommandée
+from pathlib import Path
 from django.contrib import messages
 import dj_database_url
-from dotenv import load_dotenv  # Pour charger les variables .env en local
-# En haut du fichier
 
-from pathlib import Path
-
-# Configuration dotenv (sécurisée)
+# Load environment variables
 try:
     from dotenv import load_dotenv
     load_dotenv()
 except ImportError:
-    print("Warning: python-dotenv not installed. Using system environment variables.")
+    pass  # Silently ignore if python-dotenv not available
 
+# Build paths
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'
-BASE_DIR = Path(__file__).resolve().parent.parent  # Version moderne avec pathlib
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-fallback-key-for-dev-only')
-
-# SECURITY WARNING: don't run with debug turned on in production!
+# Security
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-dev-key-123')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
 # Application definition
@@ -36,14 +28,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    # Packages tiers
+    # Third-party
     'tinymce',
     'widget_tweaks',
     'django_cleanup.apps.CleanupConfig',
     'django_extensions',
-    'whitenoise.runserver_nostatic',  # Whitenoise
+    'whitenoise.runserver_nostatic',
     
-    # Apps locales
+    # Local apps
     'first_app.apps.FirstAppConfig',
     'consultation.apps.ConsultationConfig',
     'statchart.apps.StatchartConfig',
@@ -66,7 +58,7 @@ ROOT_URLCONF = 'clinicSmart.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Ajout d'un dossier templates global
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -105,10 +97,10 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# Static files
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [BASE_DIR / 'static']  # Dossier static global
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files
@@ -130,7 +122,6 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
 }
 
-# Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # TinyMCE
@@ -164,18 +155,13 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 
 if not DEBUG:
-    # HTTPS Settings
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    
-    # HSTS Settings
-    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
-    
-    # Other Security Settings
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_BROWSER_XSS_FILTER = True
     X_FRAME_OPTIONS = 'DENY'
