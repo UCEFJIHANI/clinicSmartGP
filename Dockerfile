@@ -14,7 +14,13 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
-
+ Étape 2 - Télécharger le thème jQuery UI complet
+RUN wget https://jqueryui.com/resources/download/jquery-ui-1.12.1.zip && \
+    unzip jquery-ui-1.12.1.zip && \
+    mkdir -p static/css/images/ && \
+    cp jquery-ui-1.12.1/themes/base/images/* static/css/images/ && \
+    rm -rf jquery-ui-1.12.1*
+    
 # Étape 2: Installer les dépendances Python
 WORKDIR /app
 COPY requirements.txt .
